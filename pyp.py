@@ -4,11 +4,20 @@ import sys
 import json
 
 pypAlphabet = {}#Alfabeto (tipo dictionary)
+pypKeywords = {}#Palavras reservadas (tipo dictionary)
 
-def load_alphabet_from_json():#Procura pelo "alphabet.json"
+def load_alphabet_from_json():#Procura por "pyp_alphabet.json"
     try:
         with open('pyp_alphabet.json') as f:
             pypAlphabet = json.load(f)
+        return 1
+    except:
+        return -1
+
+def load_keywords_from_json():#Procura por "pyp_reserved.json"
+    try:
+        with open('pyp_reserved.json') as f:
+            pypKeywords = json.load(f)
         return 1
     except:
         return -1
@@ -32,6 +41,13 @@ def main():#Main chama as outras funções
         sys.exit()
     else:
         print("Alphabet loaded successfully")
+
+    #Importação de palavras reservadas
+    if(load_keywords_from_json()==-1):
+        print("Error: Keywords file 'pyp_reserved.json' not found. Run 'python reserved.py' to generate it.")
+        sys.exit()
+    else:
+        print("Keywords loaded successfully")
     
     #Importação do código fonte
     source_code_name = read_from_terminal()
