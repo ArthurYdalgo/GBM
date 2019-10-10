@@ -4,7 +4,7 @@ conditional_list = ['if','else','elif','switch','case','default']
 
 loop_list = ['for','while','do','break']
 
-data_type_list = ['int','float','struct']
+data_type_list = ['int','float','struct','canvas','template']
 
 logic_list = ['and','or']
 
