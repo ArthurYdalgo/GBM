@@ -3,9 +3,9 @@
 import sys
 import json
 
-pypAlphabet = {}
+pypAlphabet = {}#Alfabeto (tipo dictionary)
 
-def load_alphabet_from_json():
+def load_alphabet_from_json():#Procura pelo "alphabet.json"
     try:
         with open('pyp_alphabet.json') as f:
             pypAlphabet = json.load(f)
@@ -26,15 +26,15 @@ def import_file(source_code_name):#Import o arquivo, separando em linhas. Retorn
     return source_code
 
 def main():#Main chama as outras funções
-
+    #Importação do alfabeto
     if(load_alphabet_from_json()==-1):
         print("Error: Alphabet file 'pyp_alphabet.json' not found. Run 'python alphabet.py' to generate it.")
         sys.exit()
     else:
         print("Alphabet loaded successfully")
     
+    #Importação do código fonte
     source_code_name = read_from_terminal()
-    
     source_code = import_file(source_code_name)
     if(len(source_code)==0):
         print("Error: File {0} not found".format(source_code_name))
