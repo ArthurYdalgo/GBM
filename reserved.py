@@ -4,7 +4,9 @@ conditional_list = ['if','else','elif','switch','case','default']
 
 loop_list = ['for','while','do','break']
 
-data_type_list = ['int','float','struct','canvas','template']
+action_list = ['draw','erase','export','import']
+
+data_type_list = ['int','float','struct','canvas','template','circle','square']
 
 logic_list = ['and','or']
 
@@ -24,6 +26,9 @@ for token in data_type_list:
 
 for token in logic_list:
     pypKeywords[token] = "logic_token"
+
+for token in action_list:
+    pypKeywords[token] = "action_token"
 
 try:
     with open('pyp_reserved.json', 'w') as f:
