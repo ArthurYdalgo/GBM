@@ -78,7 +78,7 @@ def main():#Main chama as outras funcoes
         print("Error: File {0} not found".format(source_code_name))
         sys.exit()
     else:
-        print("Check: File readed successfully")
+        print("Check: File readed successfully")    
 
     #Varredura de caracteres
     listOfErros = charsAnalyser(source_code)
