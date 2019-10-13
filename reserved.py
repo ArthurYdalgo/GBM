@@ -6,7 +6,7 @@ loop_list = ['for','while','do','break']
 
 action_list = ['draw','erase','export','import']
 
-data_type_list = ['int','float','struct','canvas','template','circle','square']
+data_type_list = ['int','float','bool','struct','canvas','template','circle','square']
 
 logic_list = ['and','or']
 
