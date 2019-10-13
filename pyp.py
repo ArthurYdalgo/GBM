@@ -39,6 +39,26 @@ def is_a_number(str):
     except:
         return False
 
+#Verifica valor do token (token.value)
+# retorna True se a palavra começa com letras, contem ou termina letras, numeros, _
+#TO DO...
+def is_idToken_valid(token):
+    tValue = token.value
+    for char in 
+
+#Checa se os tokens de identificação são validos
+# retorna lista de erros
+def check_tokens_id_values(token_source_code):
+    errors=[]
+    line_count = 0
+    for line in token_source_code:
+        for token in line:
+            if(not(is_idToken_valid(token))):
+                errors.append(line_count)
+                break
+        line_count+=1
+    return errors
+
 #Separa o código em elementos (virgulas, identificadores, operadores), mas sem tokenização
 def split_by_separators(source_code):
     splited_source_code = []
@@ -247,17 +267,30 @@ def main():
     #print_code(source_code)
 
     #Varredura de caracteres
-    listOfErros = charsAnalyser(source_code)
-    if(len(listOfErros)!=0):
+    listofErrors = charsAnalyser(source_code)
+    if(len(listofErrors)!=0):
         print("Error: Invalid characters found on")
-        for error in listOfErros:
+        for error in listofErrors:
             print("Line: {0}".format(error))
             #print("Line: {0}, collum: {1}".format(error[0],error[1]))
         sys.exit()
     else:
         print("Check: No invalid character found")
 
+    #Transforma o código fonte em tokens
     token_source_code = toToken(source_code)
+
+    #Checagem de nomeclatura de tokens de indentificação
+    listOfErrors = check_tokens_id_values(token_source_code)
+    if(len(listofErrors)!=0):
+        print("Error: Invalid variable name found on")
+        for error in listofErrors:
+            print("Line: {0}".format(error))            
+        sys.exit()
+    else:
+        print("Check: No invalid variable name found")
+
+
    
 main()#Chama a main
 
