@@ -10,6 +10,8 @@ data_type_list = ['int','float','struct','canvas','template','circle','square']
 
 logic_list = ['and','or']
 
+literal_list = ['True','False']
+
 return_token = 'return'
 
 pypKeywords = {}
@@ -29,6 +31,9 @@ for token in logic_list:
 
 for token in action_list:
     pypKeywords[token] = "action_token"
+
+for token in literal_list:
+    pypKeywords[token] = "literal_token"
 
 try:
     with open('pyp_reserved.json', 'w') as f:
