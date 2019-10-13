@@ -41,10 +41,18 @@ def is_a_number(str):
 
 #Verifica valor do token (token.value)
 # retorna True se a palavra começa com letras, contem ou termina letras, numeros, _
-#TO DO...
 def is_idToken_valid(token):
     tValue = token.value
-    for char in 
+    if(pypAlphabet[tValue[0]] == "letter" and tValue != "_" ):
+        if(len(tValue) == 1:
+           return True;
+        for char in tValue:
+            if(pypAlphabet[char] != "letter" and pypAlphabet[char] !="digit"):
+                return False;
+        return True
+    else:
+        return False
+            
 
 #Checa se os tokens de identificação são validos
 # retorna lista de erros
@@ -77,7 +85,6 @@ def split_by_separators(source_code):
                         flag+=1
                     str_item = ' '.join(splited_line[item+1:flag])
                     del splited_line[item:flag+1]
-                    str_item = "_str:"+str_item
                     splited_line.insert(item,str_item)
                 item+=1
             #Junta elementos logicos 
@@ -118,8 +125,6 @@ def toToken(source_code):
                         new_line.append(pypToken(pypKeywords[item],item))
                     elif(is_a_number(item)):
                         new_line.append(pypToken("numeral_token",item))
-                    elif(item.startswith('_str:')):
-                        new_line.append(pypToken("literal_token",item[5:]))
                     else:
                         new_line.append(pypToken("id_token",item))
                 token_source_code.append(new_line)
