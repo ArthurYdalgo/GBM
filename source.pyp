@@ -4,7 +4,7 @@ if(a<bc){
 }
 
 if(a==bf){
-    c=4;
+    _c=4;
 }
 
   #teste  comentarioªºç
