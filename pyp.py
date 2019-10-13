@@ -42,9 +42,8 @@ def is_a_number(str):
 #Verifica valor do token (token.value)
 # retorna True se a palavra começa com letras, contem ou termina letras, numeros, _
 def is_idToken_valid(token):
-    tValue = token.value
-    print(tValue)
-    if(pypAlphabet[tValue[0]] == "letter" and tValue[0] != "_" ):
+    tValue = token.value    
+    if(pypAlphabet[tValue[0]] == "letter" and tValue[0] != "_" ):        
         if(len(tValue) == 1):
            return True
         for char in tValue:
@@ -59,13 +58,14 @@ def is_idToken_valid(token):
 # retorna lista de erros
 def check_tokens_id_values(token_source_code):
     errors=[]
-    line_count = 0
+    line_count = 1
     for line in token_source_code:
         for token in line:
-            if(token.token == "id_token" and not(is_idToken_valid(token))):
-                errors.append(line_count)
-                break
-        line_count+=1
+            if(token.token == "id_token"):
+                if(not(is_idToken_valid(token))):                    
+                    errors.append(line_count)
+                    break
+        line_count+=1    
     return errors
 
 #Separa o código em elementos (virgulas, identificadores, operadores), mas sem tokenização
@@ -221,6 +221,13 @@ def print_code(source_code):
     for line in source_code:
         print(line)
 
+#Imprime os tokens
+def print_token_code(token_source_code):
+    for line in token_source_code:
+            for item in line:
+                print "{0}:'{1}' ".format(item.token,item.value),
+            print 
+
 #Procura por chars que nao estao presentes no alfabeto
 #   retorna lista de inteiros referentes as linhas onde estao chars invalidos
 def charsAnalyser(source_code):
@@ -287,16 +294,13 @@ def main():
     #Transforma o código fonte em tokens
     token_source_code = toToken(source_code)
 
-    for line in token_source_code:
-        for item in line:
-            print "{0}:'{1}' ".format(item.token,item.value),
-        print 
+    #print_token_code(token_source_code)
 
     #Checagem de nomeclatura de tokens de indentificação
-    listOfErrors = check_tokens_id_values(token_source_code)
-    if(len(listofErrors)!=0):
+    listOfErrors = check_tokens_id_values(token_source_code)    
+    if(len(listOfErrors)!=0):
         print("Error: Invalid variable name found on")
-        for error in listofErrors:
+        for error in listOfErrors:
             print("Line: {0}".format(error))            
         sys.exit()
     else:
