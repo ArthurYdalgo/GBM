@@ -34,6 +34,14 @@ def isnt_comment(line):
             return True
     return False
 
+def is_a_number(str):
+    try:
+        float(str)
+        return True
+    except:
+        return False
+
+
 #Separa o código em elementos (virgulas, identificadores, operadores), mas sem tokenização
 def split_by_separators(source_code):
     splited_source_code = []
@@ -79,8 +87,10 @@ def toToken(source_code):
                         new_line.append(pypToken(pypAlphabet[item],item))
                     elif(item in pypKeywords):                        
                         new_line.append(pypToken(pypKeywords[item],item))
+                    elif(is_a_number(item)):
+                        new_line.append(pypToken("numeral_token",item))
                     else:
-                        new_line.append(pypToken("idtoken",item))
+                        new_line.append(pypToken("id_token",item))
                 token_source_code.append(new_line)
         else:
             token_source_code.append([pypToken("empty_line","")])
