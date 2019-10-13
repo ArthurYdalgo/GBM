@@ -82,15 +82,14 @@ def split_by_separators(source_code):
             #Junta elementos logicos 
             item=0           
             while(item<len(splited_line)):                
-                if(splited_line[item]=="=" or splited_line[item] == "<" or splited_line[item] == ">"):
-                    
+                if(splited_line[item]=="=" or splited_line[item] == "<" or splited_line[item] == ">"):   
                     try:                        
                         if(splited_line[item+1]=="="):                                                        
                             new_logic = splited_line[item]+"="                                                        
                             del splited_line[item:item+2]                            
                             splited_line.insert(item,new_logic)                                                        
                     except:
-                        pass
+                        pass                
                 item+=1                  
             splited_source_code.append(splited_line)    
         elif(len(line)>0 and not(isnt_comment(line))):
