@@ -8,14 +8,16 @@ letters_list = lowerCase_list+upperCase_list
 
 mathElements_list = ['+','-','/','*','%','^']
 
-logicElements_list = ['<','>','=','<=','==','>=','!']
+logicElements_list = ['<','>','<=','==','>=','!']
 
 separators_list = ['(',')','[',']','{','}','"','\'','.',';',',',':']
 
 commentTag = '#'
+attribution_tag = "="
 
 pypAlphabet = {}
 pypAlphabet[commentTag] = "comment_tag"
+pypAlphabet[attribution_tag] = "attribution_token"
 
 for element in digits_list:
     pypAlphabet[element] = "digit"
