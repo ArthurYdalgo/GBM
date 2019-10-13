@@ -53,7 +53,7 @@ def split_by_separators(source_code):
             splited_line = filter(lambda a: a != "", splited_line)           
             #Junta elementos que formam string        
             item = 0
-            while(item<len(splited_line)):
+            while(item<len(splited_line)):                
                 if(splited_line[item]=="\""):
                     flag = item+1
                     while(splited_line[flag]!="\""):
@@ -62,6 +62,19 @@ def split_by_separators(source_code):
                     del splited_line[item:flag+1]
                     splited_line.insert(item,str_item)
                 item+=1
+            #Junta elementos logicos 
+            item=0           
+            while(item<len(splited_line)):                
+                if(splited_line[item]=="=" or splited_line[item] == "<" or splited_line[item] == ">"):
+                    
+                    try:                        
+                        if(splited_line[item+1]=="="):                                                        
+                            new_logic = splited_line[item]+"="                                                        
+                            del splited_line[item:item+2]                            
+                            splited_line.insert(item,new_logic)                                                        
+                    except:
+                        pass
+                item+=1                  
             splited_source_code.append(splited_line)    
         elif(len(line)>0 and not(isnt_comment(line))):
             splited_source_code.append([line])
