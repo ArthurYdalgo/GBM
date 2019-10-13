@@ -67,8 +67,7 @@ def toToken(source_code):
     global pypAlphabet
     global pypKeywords
     splited_source_code = split_by_separators(source_code)
-    token_source_code = []
-    print_code(splited_source_code)
+    token_source_code = []    
     for line in splited_source_code:        
         if(len(line)>0):
             if(not(isnt_comment(line))):
@@ -83,6 +82,8 @@ def toToken(source_code):
                     else:
                         new_line.append(pypToken("idtoken",item))
                 token_source_code.append(new_line)
+        else:
+            token_source_code.append([pypToken("empty_line","")])
 
     for line in token_source_code:
         for item in line:
