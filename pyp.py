@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# -*- coding: utf-8 -*-
 import sys
 import json
 from collections import namedtuple #biblioteca utilizada para criar um "struct"
@@ -12,7 +12,15 @@ wrongChar = namedtuple("charPosition","line collum")
 pypAlphabet = {}#Alfabeto (tipo dictionary)
 pypKeywords = {}#Palavras reservadas (tipo dictionary)
 
-def load_alphabet_from_json():#Procura por "pyp_alphabet.json"
+#Confere se a linha nao e' comentario
+# retorna verdadeiro se a linha nao for comentario
+def isnt_comment(line):
+    if(line[0]!="#"):
+        return True
+    return False
+
+#Procura por "pyp_alphabet.json"
+def load_alphabet_from_json():
     try:
         with open('pyp_alphabet.json') as f:
             global pypAlphabet
@@ -21,7 +29,8 @@ def load_alphabet_from_json():#Procura por "pyp_alphabet.json"
     except:
         return -1
 
-def load_keywords_from_json():#Procura por "pyp_reserved.json"
+#Procura por "pyp_reserved.json"
+def load_keywords_from_json():
     try:
         with open('pyp_reserved.json') as f:
             global pypKeywords
@@ -30,10 +39,12 @@ def load_keywords_from_json():#Procura por "pyp_reserved.json"
     except:
         return -1
 
-def read_from_terminal():#Le o nome do arquivo entrado depois do script no terminal
+#Le o nome do arquivo entrado depois do script no terminal
+def read_from_terminal():
     return sys.argv[1]
 
-def import_file(source_code_name):#Import o arquivo, separando em linhas. Retorna uma lista de linhas
+#Import o arquivo, separando em linhas. Retorna uma lista de linhas
+def import_file(source_code_name):
     try:
         with open (source_code_name, "r") as myfile:
             source_code=myfile.read().splitlines()
@@ -42,21 +53,80 @@ def import_file(source_code_name):#Import o arquivo, separando em linhas. Retorn
 
     return source_code
 
+#Remove espaços indiferentes ao começo, final, ou duplicados
+def remove_duplicated_first_last_spaces(source_code):
+    for line in range(len(source_code)):
+        source_code[line] = " ".join(source_code[line].split())
+    return source_code
+
+#Confere se um dado character esta entre letras (ou numeros)
+#   (usado para remover espaços entre chars que nao sao letras ou numeros)
+def between_digits(str,char):
+    global pypAlphabet        
+    if((pypAlphabet[str[char-1]]=="letter" or pypAlphabet[str[char-1]]=="digit")and (pypAlphabet[str[char+1]]=="letter" or pypAlphabet[str[char+1]]=="digit")):        
+        return True
+    return False
+
+
+def comment_removal(source_code):
+    for line in range(len(source_code)):
+        if(len(source_code[line])>0):
+            if(isnt_comment(source_code[line])):
+                char = 0
+                while(char!=len(source_code[line])):
+                    if(source_code[line][char]=="#"):
+                        source_code[line] = source_code[line][:char]
+                        break
+                    char+=1
+    return source_code
+            
+
+
+
+#Remocao de espacos entre separadores e operadores
+def remove_spaces_next_to_separators(source_code):
+    global pypAlphabet
+    for line in range(len(source_code)):
+        char = 0
+        while(char!=len(source_code[line])):
+            if(source_code[line][char]==" "):
+                if(not(between_digits(source_code[line],char))):                    
+                    source_code[line] = source_code[line][:char] + source_code[line][(char+1):]
+                    char-=1
+            char+=1
+    return source_code
+        
+#Remocao geral de espacos (chama as outras funcoes de remocao)
+def space_removal(source_code):  
+    source_code = remove_duplicated_first_last_spaces(source_code)    
+    source_code = remove_spaces_next_to_separators(source_code)    
+    return source_code
+
+#Imprime o codigo enviado
+def print_code(source_code):
+    for line in source_code:
+        print(line)
+
+#Procura por chars que nao estao presentes no alfabeto
+#   retorna lista de inteiros referentes as linhas onde estao chars invalidos
 def charsAnalyser(source_code):
     errors = []    
     line_count = 1
     for line in source_code:
-        char_count = 1        
-        for char in line:            
-            if(not(char in pypAlphabet)):                
-                errors.append(line_count)
-                break
-                #errors.append(wrongChar(line_count,char_count))
-            #char_count+=1
+        if(len(line)>0):
+            if(isnt_comment(line)):
+                char_count = 1        
+                for char in line:            
+                    if(not(char in pypAlphabet)):                
+                        errors.append(line_count)
+                        break
+                        #errors.append(wrongChar(line_count,char_count))
+                    #char_count+=1
         line_count+=1
     return errors
 
-def main():#Main chama as outras funcoes
+#Main chama as outras funcoes
+def main():
     #Importacao do alfabeto
     if(load_alphabet_from_json()==-1):
         print("Error: Alphabet file 'pyp_alphabet.json' not found. Run 'python alphabet.py' to generate it.")
@@ -80,6 +150,12 @@ def main():#Main chama as outras funcoes
     else:
         print("Check: File readed successfully")    
 
+    #Remocao de espacos
+    source_code = space_removal(source_code)
+
+    #Remocao de comentarios no final da linha
+    source_code = comment_removal(source_code)
+
     #Varredura de caracteres
     listOfErros = charsAnalyser(source_code)
     if(len(listOfErros)!=0):
@@ -87,9 +163,12 @@ def main():#Main chama as outras funcoes
         for error in listOfErros:
             print("Line: {0}".format(error))
             #print("Line: {0}, collum: {1}".format(error[0],error[1]))
+        sys.exit()
     else:
         print("Check: No invalid character found")
 
+    #Imprime código apos tratamentos
+    #print_code(source_code)
     
 
 main()#Chama a main
