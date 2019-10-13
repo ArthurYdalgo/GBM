@@ -1,6 +1,5 @@
-canvas fundo(1920,1080,"white");
-#teste comentario
+canvas fundo(1920,1080,"white")    ;
 
-fundo.draw(square(20,20,"black"));
-
-fundo.export("teste.png");
+ #teste  comentarioªºç
+    fundo.draw( square(20,20,"black"));#svbweuyvfuªª
+ fundo.export("teste.png");
