@@ -43,12 +43,13 @@ def is_a_number(str):
 # retorna True se a palavra começa com letras, contem ou termina letras, numeros, _
 def is_idToken_valid(token):
     tValue = token.value
-    if(pypAlphabet[tValue[0]] == "letter" and tValue != "_" ):
-        if(len(tValue) == 1:
-           return True;
+    print(tValue)
+    if(pypAlphabet[tValue[0]] == "letter" and tValue[0] != "_" ):
+        if(len(tValue) == 1):
+           return True
         for char in tValue:
             if(pypAlphabet[char] != "letter" and pypAlphabet[char] !="digit"):
-                return False;
+                return False
         return True
     else:
         return False
@@ -61,7 +62,7 @@ def check_tokens_id_values(token_source_code):
     line_count = 0
     for line in token_source_code:
         for token in line:
-            if(not(is_idToken_valid(token))):
+            if(token.token == "id_token" and not(is_idToken_valid(token))):
                 errors.append(line_count)
                 break
         line_count+=1
@@ -85,6 +86,7 @@ def split_by_separators(source_code):
                         flag+=1
                     str_item = ' '.join(splited_line[item+1:flag])
                     del splited_line[item:flag+1]
+                    str_item = "_str:"+str_item
                     splited_line.insert(item,str_item)
                 item+=1
             #Junta elementos logicos 
@@ -125,16 +127,14 @@ def toToken(source_code):
                         new_line.append(pypToken(pypKeywords[item],item))
                     elif(is_a_number(item)):
                         new_line.append(pypToken("numeral_token",item))
+                    elif(item.startswith('_str:')):
+                        new_line.append(pypToken("literal_token",item[5:]))
                     else:
                         new_line.append(pypToken("id_token",item))
                 token_source_code.append(new_line)
         else:
-            token_source_code.append([pypToken("empty_line","")])
-
-    for line in token_source_code:
-        for item in line:
-            print "{0}:'{1}' ".format(item.token,item.value),
-        print 
+            token_source_code.append([pypToken("empty_line","")])    
+    return token_source_code
 
 #Procura por "pyp_alphabet.json"
 def load_alphabet_from_json():
@@ -287,6 +287,11 @@ def main():
     #Transforma o código fonte em tokens
     token_source_code = toToken(source_code)
 
+    for line in token_source_code:
+        for item in line:
+            print "{0}:'{1}' ".format(item.token,item.value),
+        print 
+
     #Checagem de nomeclatura de tokens de indentificação
     listOfErrors = check_tokens_id_values(token_source_code)
     if(len(listofErrors)!=0):
@@ -296,6 +301,7 @@ def main():
         sys.exit()
     else:
         print("Check: No invalid variable name found")
+    
 
 
    
