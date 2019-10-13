@@ -18,8 +18,6 @@ class pypToken():
         self.token = token
         self.value = value
         
-
-
 pypAlphabet = {}#Alfabeto (tipo dictionary)
 pypKeywords = {}#Palavras reservadas (tipo dictionary)
 
@@ -40,7 +38,6 @@ def is_a_number(str):
         return True
     except:
         return False
-
 
 #Separa o código em elementos (virgulas, identificadores, operadores), mas sem tokenização
 def split_by_separators(source_code):
@@ -82,7 +79,6 @@ def split_by_separators(source_code):
             splited_source_code.append([])
     return splited_source_code
 
-
 #Transforma os elementos em tokens
 def toToken(source_code):
     global pypAlphabet
@@ -112,8 +108,6 @@ def toToken(source_code):
         for item in line:
             print "{0}:'{1}' ".format(item.token,item.value),
         print 
-    
-
 
 #Procura por "pyp_alphabet.json"
 def load_alphabet_from_json():
@@ -265,7 +259,6 @@ def main():
 
     token_source_code = toToken(source_code)
    
-
 main()#Chama a main
 
 
