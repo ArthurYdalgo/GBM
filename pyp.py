@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import json
+import re
 from collections import namedtuple #biblioteca utilizada para criar um "struct"
 
 #"Struct" de caracter, contendo linha e coluna. Dados a serem apresentados caso um caracter invalido seja
@@ -9,15 +10,86 @@ from collections import namedtuple #biblioteca utilizada para criar um "struct"
 wrongChar = namedtuple("charPosition","line collum")
 #exemplo: wrongCharsList.append(wrongChar(3,7))
 
+#"Struct" de token, contendo linha e coluna. Dados a serem apresentados caso um caracter invalido seja
+#   encontrado
+#pypToken = namedtuple("pypToken","token value")
+class pypToken():
+    def __init__(self, token, value):
+        self.token = token
+        self.value = value
+        
+
+
 pypAlphabet = {}#Alfabeto (tipo dictionary)
 pypKeywords = {}#Palavras reservadas (tipo dictionary)
 
 #Confere se a linha nao e' comentario
 # retorna verdadeiro se a linha nao for comentario
-def isnt_comment(line):
-    if(line[0]!="#"):
-        return True
+def isnt_comment(line):    
+    if (type(line) is str):
+        if(line[0]!="#"):
+            return True
+    elif(type(line) is list ):
+        if(line[0][0]!="#"):
+            return True
     return False
+
+#Separa o código em elementos (virgulas, identificadores, operadores), mas sem tokenização
+def split_by_separators(source_code):
+    splited_source_code = []
+    for line in source_code:        
+        if(len(line)>0 and isnt_comment(line)):
+            splited_line = re.split('(\W)', line)
+            #Opcional: remover o espaço como separador 
+            splited_line = filter(lambda a: a != " ", splited_line)     
+            splited_line = filter(lambda a: a != "", splited_line)           
+            #Junta elementos que formam string        
+            item = 0
+            while(item<len(splited_line)):
+                if(splited_line[item]=="\""):
+                    flag = item+1
+                    while(splited_line[flag]!="\""):
+                        flag+=1
+                    str_item = ' '.join(splited_line[item+1:flag])
+                    del splited_line[item:flag+1]
+                    splited_line.insert(item,str_item)
+                item+=1
+            splited_source_code.append(splited_line)    
+        elif(len(line)>0 and not(isnt_comment(line))):
+            splited_source_code.append([line])
+        else:
+            splited_source_code.append([])
+    return splited_source_code
+
+
+#Transforma os elementos em tokens
+def toToken(source_code):
+    global pypAlphabet
+    global pypKeywords
+    splited_source_code = split_by_separators(source_code)
+    token_source_code = []
+    print_code(splited_source_code)
+    for line in splited_source_code:        
+        if(len(line)>0):
+            if(not(isnt_comment(line))):
+                token_source_code.append([pypToken("comment",line[0])])
+            else:
+                new_line=[]
+                for item in line:
+                    if(item in pypAlphabet):
+                        new_line.append(pypToken(pypAlphabet[item],item))
+                    elif(item in pypKeywords):                        
+                        new_line.append(pypToken(pypKeywords[item],item))
+                    else:
+                        new_line.append(pypToken("idtoken",item))
+                token_source_code.append(new_line)
+
+    for line in token_source_code:
+        for item in line:
+            print "{0}:'{1}' ".format(item.token,item.value),
+        print 
+    
+
 
 #Procura por "pyp_alphabet.json"
 def load_alphabet_from_json():
@@ -67,7 +139,7 @@ def between_digits(str,char):
         return True
     return False
 
-
+#Remoção de comentários no final da linha
 def comment_removal(source_code):
     for line in range(len(source_code)):
         if(len(source_code[line])>0):
@@ -79,9 +151,6 @@ def comment_removal(source_code):
                         break
                     char+=1
     return source_code
-            
-
-
 
 #Remocao de espacos entre separadores e operadores
 def remove_spaces_next_to_separators(source_code):
@@ -156,6 +225,9 @@ def main():
     #Remocao de comentarios no final da linha
     source_code = comment_removal(source_code)
 
+    #Imprime código apos tratamentos
+    #print_code(source_code)
+
     #Varredura de caracteres
     listOfErros = charsAnalyser(source_code)
     if(len(listOfErros)!=0):
@@ -167,9 +239,8 @@ def main():
     else:
         print("Check: No invalid character found")
 
-    #Imprime código apos tratamentos
-    #print_code(source_code)
-    
+    token_source_code = toToken(source_code)
+   
 
 main()#Chama a main
 
