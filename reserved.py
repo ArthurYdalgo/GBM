@@ -1,5 +1,7 @@
 import json
 
+file_name = "gbm_reserved.json"
+
 conditional_list = ['if','else','elif','switch','case','default']
 
 loop_list = ['for','while','do','break']
@@ -36,9 +38,9 @@ for token in literal_list:
     pypKeywords[token] = "literal_token"
 
 try:
-    with open('pyp_reserved.json', 'w') as f:
+    with open(file_name, 'w') as f:
         json.dump(pypKeywords, f)
 except:
-    print("Error while creating 'pyp_reserved.py'.")
+    print("Error while creating {0}.".format(file_name))
 
 
