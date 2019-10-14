@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 import sys
 import json
 import re
@@ -174,7 +175,11 @@ def load_keywords_from_json():
 
 #Le o nome do arquivo entrado depois do script no terminal
 def read_from_terminal():
-    return sys.argv[1]
+    try:
+        return sys.argv[1]
+    except:
+        print("Error: no input file")
+        sys.exit()
 
 #Import o arquivo, separando em linhas. Retorna uma lista de linhas
 def import_file(source_code_name):
