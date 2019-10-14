@@ -251,26 +251,46 @@ def print_token_code(token_source_code):
 
 #Procura por chars que nao estao presentes no alfabeto
 #   retorna lista de inteiros referentes as linhas onde estao chars invalidos
-def charsAnalyser(source_code):
-    errors = []    
-    line_count = 1
-    for line in source_code:
-        if(len(line)>0):
-            if(isnt_comment(line)):
-                char_count = 1        
-                for char in line:            
-                    if(not(char in pypAlphabet)):                
-                        errors.append(line_count)
-                        break
-                        #errors.append(wrongChar(line_count,char_count))
-                    #char_count+=1
-        line_count+=1
+# def charsAnalyser(source_code):
+#     errors = []    
+#     line_count = 1
+#     for line in source_code:
+#         if(len(line)>0):
+#             if(isnt_comment(line)):                   
+#                 for char in line:            
+#                     if(not(char in pypAlphabet)):                
+
+#                         errors.append(line_count)
+#                         break
+#                         #errors.append(wrongChar(line_count,char_count))                    
+#         line_count+=1
     
-    if(len(errors)!=0):
-        print("Error: Invalid characters found on")
-        for error in errors:
-            print("Line: {0}".format(error))          
-        sys.exit()    
+#     if(len(errors)!=0):
+#         print("Error: Invalid characters found on")
+#         for error in errors:
+#             print("Line: {0}".format(error))          
+#         sys.exit()    
+
+def charsAnalyser(source_code):
+    warnings = {}       
+    for line_it in range(len(source_code)):
+        if(len(source_code[line_it])>0):
+            if(isnt_comment(source_code[line_it])):                   
+                char_it=0
+                while(char_it < len(source_code[line_it])):                
+                    if(not(source_code[line_it][char_it] in pypAlphabet)):                            
+                        source_code[line_it]= source_code[line_it][:char_it] + source_code[line_it][char_it + 1:]
+                        if(not(line_it in warnings)):
+                            warnings[line_it]=1
+                        else:
+                            warnings[line_it]+=1
+                        char_it-=1
+                    char_it+=1        
+    if(len(warnings)>0):
+        print("Warning: invalid character(s) found and removed from")
+        for warning in warnings:
+            print("Line {0}: {1} invalid character(s)".format(warning,warnings[warning]))
+    return source_code
 
 #Main chama as outras funcoes
 def main():
@@ -294,8 +314,8 @@ def main():
     #print_code(source_code)
 
     #Varredura de caracteres
-    charsAnalyser(source_code)    
-
+    source_code = charsAnalyser(source_code)
+    
     #Transforma o código fonte em tokens
     token_source_code = toToken(source_code)
 
