@@ -4,6 +4,7 @@
 import sys #biblioteca para usar comandos de sistema
 import json #biblioteca para arquivos json
 import re #biblioteca de regex
+import os.path #biblioteca para verificação de existencia de arquivo
 
 #"Struct" de token, contendo linha e coluna. Dados a serem apresentados caso um caracter invalido seja
 #   encontrado
@@ -181,13 +182,30 @@ def read_from_terminal():
 
 #Import o arquivo, separando em linhas. Retorna uma lista de linhas
 def import_file(source_code_name):
-    try:
-        with open (source_code_name, "r") as myfile:
-            source_code=myfile.read().splitlines()
-        return source_code
-    except:    
-        print("Error: File {0} not found".format(source_code_name))
+    test_source_code_name = source_code_name+".pyp"    
+    if(os.path.exists(source_code_name)):
+        try:
+            with open (source_code_name, "r") as myfile:
+                source_code=myfile.read().splitlines()
+            return source_code    
+        except:
+            print("Error: Attempt to import file \"{0}\" failed.".format(source_code_name))
+            sys.exit()
+    elif(os.path.exists(test_source_code_name)):
+        try:        
+            with open ((test_source_code_name), "r") as second_file:
+                source_code=second_file.read().splitlines()
+            print("Warning: File \"{0}\" not found. File \"{1}\" found and imported".format(source_code_name,test_source_code_name))
+            return source_code
+        except:    
+            print("Error: File \"{0}\" not found. File \"{1}\" found but attempt to import file failed.".format(source_code_name,test_source_code_name))
+            sys.exit()
+    else:
+        print("Error: File \"{0}\" not found. Attempted to import \"{1}\" but such file doesn't exist either.".format(source_code_name,test_source_code_name))
         sys.exit()
+        
+
+    
 
     
 
