@@ -180,10 +180,12 @@ def import_file(source_code_name):
     try:
         with open (source_code_name, "r") as myfile:
             source_code=myfile.read().splitlines()
+        return source_code
     except:    
-        return ""
+        print("Error: File {0} not found".format(source_code_name))
+        sys.exit()
 
-    return source_code
+    
 
 #Remove espaços indiferentes ao começo, final, ou duplicados
 def remove_duplicated_first_last_spaces(source_code):
@@ -281,13 +283,7 @@ def main():
     
     #Importacao do codigo fonte
     source_code_name = read_from_terminal()
-    source_code = import_file(source_code_name)
-    if(len(source_code)==0):
-        print("Error: File {0} not found".format(source_code_name))
-        sys.exit()
-    else:
-        #print("Check: File readed successfully")    
-        pass
+    source_code = import_file(source_code_name)    
 
     #Remocao de espacos
     source_code = space_removal(source_code)
