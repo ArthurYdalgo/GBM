@@ -60,8 +60,12 @@ def check_tokens_id_values(token_source_code):
                 if(not(is_idToken_valid(token))):                    
                     errors.append(line_count)
                     break
-        line_count+=1    
-    return errors
+        line_count+=1   
+    if(len(errors)!=0):
+        print("Error: Invalid variable name found on")
+        for error in errors:
+            print("Line: {0}".format(error))            
+        sys.exit()     
 
 #Separa o código em elementos (virgulas, identificadores, operadores), mas sem tokenização
 def split_by_separators(source_code):
@@ -152,20 +156,20 @@ def load_alphabet_from_json():
     try:
         with open('pyp_alphabet.json') as f:
             global pypAlphabet
-            pypAlphabet = json.load(f)            
-        return 1
+            pypAlphabet = json.load(f)                    
     except:
-        return -1
+        print("Error: Alphabet file 'pyp_alphabet.json' not found. Run 'python alphabet.py' to generate it.")
+        sys.exit()
 
 #Procura por "pyp_reserved.json"
 def load_keywords_from_json():
     try:
         with open('pyp_reserved.json') as f:
             global pypKeywords
-            pypKeywords = json.load(f)
-        return 1
+            pypKeywords = json.load(f)        
     except:
-        return -1
+        print("Error: Keywords file 'pyp_reserved.json' not found. Run 'python reserved.py' to generate it.")
+        sys.exit()
 
 #Le o nome do arquivo entrado depois do script no terminal
 def read_from_terminal():
@@ -261,25 +265,20 @@ def charsAnalyser(source_code):
                         #errors.append(wrongChar(line_count,char_count))
                     #char_count+=1
         line_count+=1
-    return errors
+    
+    if(len(errors)!=0):
+        print("Error: Invalid characters found on")
+        for error in errors:
+            print("Line: {0}".format(error))          
+        sys.exit()    
 
 #Main chama as outras funcoes
 def main():
     #Importacao do alfabeto
-    if(load_alphabet_from_json()==-1):
-        print("Error: Alphabet file 'pyp_alphabet.json' not found. Run 'python alphabet.py' to generate it.")
-        sys.exit()
-    else:
-        #print("Check: Alphabet loaded successfully")
-        pass
-
+    load_alphabet_from_json()
+    
     #Importacao de palavras reservadas
-    if(load_keywords_from_json()==-1):
-        print("Error: Keywords file 'pyp_reserved.json' not found. Run 'python reserved.py' to generate it.")
-        sys.exit()
-    else:
-        #print("Check: Keywords loaded successfully")
-        pass
+    load_keywords_from_json()
     
     #Importacao do codigo fonte
     source_code_name = read_from_terminal()
@@ -295,16 +294,7 @@ def main():
     #print_code(source_code)
 
     #Varredura de caracteres
-    listofErrors = charsAnalyser(source_code)
-    if(len(listofErrors)!=0):
-        print("Error: Invalid characters found on")
-        for error in listofErrors:
-            print("Line: {0}".format(error))
-            #print("Line: {0}, collum: {1}".format(error[0],error[1]))
-        sys.exit()
-    else:
-        #print("Check: No invalid character found")
-        pass
+    charsAnalyser(source_code)    
 
     #Transforma o código fonte em tokens
     token_source_code = toToken(source_code)
@@ -312,15 +302,8 @@ def main():
     #print_token_code(token_source_code)
 
     #Checagem de nomeclatura de tokens de indentificação
-    listOfErrors = check_tokens_id_values(token_source_code)    
-    if(len(listOfErrors)!=0):
-        print("Error: Invalid variable name found on")
-        for error in listOfErrors:
-            print("Line: {0}".format(error))            
-        sys.exit()
-    else:
-        #print("Check: No invalid variable name found")
-        pass
+    check_tokens_id_values(token_source_code)    
+    
    
 main()#Chama a main
 
