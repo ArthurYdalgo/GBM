@@ -4,7 +4,6 @@
 import sys #biblioteca para usar comandos de sistema
 import json #biblioteca para arquivos json
 import re #biblioteca de regex
-from collections import namedtuple #biblioteca utilizada para criar um "struct"
 
 #"Struct" de token, contendo linha e coluna. Dados a serem apresentados caso um caracter invalido seja
 #   encontrado
