@@ -1,19 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
-import json
-import re
+import sys #biblioteca para usar comandos de sistema
+import json #biblioteca para arquivos json
+import re #biblioteca de regex
 from collections import namedtuple #biblioteca utilizada para criar um "struct"
-
-#"Struct" de caracter, contendo linha e coluna. Dados a serem apresentados caso um caracter invalido seja
-#   encontrado
-wrongChar = namedtuple("charPosition","line collum")
-#exemplo: wrongCharsList.append(wrongChar(3,7))
 
 #"Struct" de token, contendo linha e coluna. Dados a serem apresentados caso um caracter invalido seja
 #   encontrado
-#pypToken = namedtuple("pypToken","token value")
 class pypToken():
     def __init__(self, token, value):
         self.token = token
@@ -33,6 +27,7 @@ def isnt_comment(line):
             return True
     return False
 
+#Verifica se string é um numero
 def is_a_number(str):
     try:
         float(str)
@@ -331,9 +326,6 @@ def main():
     else:
         #print("Check: No invalid variable name found")
         pass
-    
-
-
    
 main()#Chama a main
 
