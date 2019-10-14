@@ -15,7 +15,7 @@ Tais listas passam por laços e são inclusos ao alfabeto (pypAlphabet) que é u
 
 ### Exportação
 
-Utiliza-se da função "json.dump()" para exportar o *dictionary* para o arquivo "pyp_Alphabet.json". Tal operação encontra-se dentro de um "*try* ... *except*", a fim de informar caso um erro ocorra durante a exportação do alfabeto.
+Utiliza-se da função "json.dump()" para exportar o *dictionary* para o arquivo "gbm_Alphabet.json". Tal operação encontra-se dentro de um "*try* ... *except*", a fim de informar caso um erro ocorra durante a exportação do alfabeto.
 
 
 
@@ -35,7 +35,7 @@ Tais listas passam por laços e são inclusos ao alfabeto (pypKeywords) que é u
 
 ### Exportação
 
-Utiliza-se da função "json.dump()" para exportar o *dictionary* para o arquivo "pyp_reserved.json". Tal operação encontra-se dentro de um "*try* ... *except*", a fim de informar caso um erro ocorra durante a exportação do alfabeto.
+Utiliza-se da função "json.dump()" para exportar o *dictionary* para o arquivo "gbm_reserved.json". Tal operação encontra-se dentro de um "*try* ... *except*", a fim de informar caso um erro ocorra durante a exportação do alfabeto.
 
 
 
@@ -73,11 +73,11 @@ Executada no inicio do código, responsável por chamar as funções seguintes
 
 #### -load_alphabet_from_json()
 
-Responsável por importar o alfabeto do arquivo "pyp_alphabet.json" para a variável global do tipo *dictionary* "pypAlphabet". Não possui parametros nem retorno e em caso de erro ao importar, informa o erro e a compilação é encerrada.
+Responsável por importar o alfabeto do arquivo "gbm_alphabet.json" para a variável global do tipo *dictionary* "pypAlphabet". Não possui parametros nem retorno e em caso de erro ao importar, informa o erro e a compilação é encerrada.
 
 #### -load_keywords_from_json()
 
-Responsável por importar as palavras reservadas do arquivo "pyp_reserved.json" para a variável global do tipo *dictionary* "pypKeywords". Não possui parametros nem retorno e em caso de erro ao importar, informa o erro e a compilação é encerrada.
+Responsável por importar as palavras reservadas do arquivo "gbm_reserved.json" para a variável global do tipo *dictionary* "pypKeywords". Não possui parametros nem retorno e em caso de erro ao importar, informa o erro e a compilação é encerrada.
 
 #### -read_from_terminal()
 
