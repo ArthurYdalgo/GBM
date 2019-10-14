@@ -154,21 +154,21 @@ def toToken(source_code):
 #Procura por "pyp_alphabet.json"
 def load_alphabet_from_json():
     try:
-        with open('pyp_alphabet.json') as f:
+        with open('gbm_alphabet.json') as f:
             global pypAlphabet
             pypAlphabet = json.load(f)                    
     except:
-        print("Error: Alphabet file 'pyp_alphabet.json' not found. Run 'python alphabet.py' to generate it.")
+        print("Error: Alphabet file 'gbm_alphabet.json' not found. Run 'python alphabet.py' to generate it.")
         sys.exit()
 
 #Procura por "pyp_reserved.json"
 def load_keywords_from_json():
     try:
-        with open('pyp_reserved.json') as f:
+        with open('gbm_reserved.json') as f:
             global pypKeywords
             pypKeywords = json.load(f)        
     except:
-        print("Error: Keywords file 'pyp_reserved.json' not found. Run 'python reserved.py' to generate it.")
+        print("Error: Keywords file 'gbm_reserved.json' not found. Run 'python reserved.py' to generate it.")
         sys.exit()
 
 #Le o nome do arquivo entrado depois do script no terminal
