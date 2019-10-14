@@ -8,6 +8,6 @@ if(a==bf){
 }
 
   #teste  comentarioªºç
-    fundo.draw( square(20,20,black"));#svbweuyvfuªª
+    fundo.draw( square(20,20,"black"));#svbweuyvfuªª
  fundo.export("teste de final","png");
  #comentario
