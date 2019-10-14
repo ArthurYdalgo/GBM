@@ -1,5 +1,7 @@
 import json
 
+file_name = "gbm_alphabet.json"
+
 digits_list = ['0','1','2','3','4','5','6','7','8','9']
 
 lowerCase_list = ['_',' ','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
@@ -35,7 +37,7 @@ for element in separators_list:
     pypAlphabet[element] = "separator"
 
 try:
-    with open('pyp_alphabet.json', 'w') as f:
+    with open(file_name, 'w') as f:
         json.dump(pypAlphabet, f)
 except:
-    print("Error while creating 'pyp_alphabet.py'.")
+    print("Error while creating {0}.".format(file_name))
