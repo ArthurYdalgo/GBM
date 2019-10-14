@@ -71,6 +71,9 @@ def check_tokens_id_values(token_source_code):
 #Separa o código em elementos (virgulas, identificadores, operadores), mas sem tokenização
 def split_by_separators(source_code):
     splited_source_code = []
+    unclosed_strings=[]
+    unclosed_flag=False
+    line_count=1
     for line in source_code:        
         if(len(line)>0 and isnt_comment(line)):
             splited_line = re.split('(\W)', line)
@@ -82,8 +85,15 @@ def split_by_separators(source_code):
             while(item<len(splited_line)):                
                 if(splited_line[item]=="\""):
                     flag = item+1
-                    while(splited_line[flag]!="\""):
+                    while(splited_line[flag]!="\""):                        
                         flag+=1
+                        if(flag==len(splited_line)):
+                            unclosed_strings.append(line_count)
+                            unclosed_flag=True
+                            break
+                    if(unclosed_flag):
+                        unclosed_flag=False
+                        break
                     str_item = ' '.join(splited_line[item+1:flag])
                     del splited_line[item:flag+1]
                     str_item = "_str:"+str_item
@@ -106,6 +116,12 @@ def split_by_separators(source_code):
             splited_source_code.append([line])
         else:
             splited_source_code.append([])
+        line_count+=1
+    if(len(unclosed_strings)>0):
+        print("Error: unclosed string found on")
+        for error in unclosed_strings:
+            print("Line: {0}".format(error))
+        sys.exit()
     return splited_source_code
 
 #Transforma os elementos em tokens
@@ -253,14 +269,16 @@ def main():
         print("Error: Alphabet file 'pyp_alphabet.json' not found. Run 'python alphabet.py' to generate it.")
         sys.exit()
     else:
-        print("Check: Alphabet loaded successfully")
+        #print("Check: Alphabet loaded successfully")
+        pass
 
     #Importacao de palavras reservadas
     if(load_keywords_from_json()==-1):
         print("Error: Keywords file 'pyp_reserved.json' not found. Run 'python reserved.py' to generate it.")
         sys.exit()
     else:
-        print("Check: Keywords loaded successfully")
+        #print("Check: Keywords loaded successfully")
+        pass
     
     #Importacao do codigo fonte
     source_code_name = read_from_terminal()
@@ -269,7 +287,8 @@ def main():
         print("Error: File {0} not found".format(source_code_name))
         sys.exit()
     else:
-        print("Check: File readed successfully")    
+        #print("Check: File readed successfully")    
+        pass
 
     #Remocao de espacos
     source_code = space_removal(source_code)
@@ -289,7 +308,8 @@ def main():
             #print("Line: {0}, collum: {1}".format(error[0],error[1]))
         sys.exit()
     else:
-        print("Check: No invalid character found")
+        #print("Check: No invalid character found")
+        pass
 
     #Transforma o código fonte em tokens
     token_source_code = toToken(source_code)
@@ -304,7 +324,8 @@ def main():
             print("Line: {0}".format(error))            
         sys.exit()
     else:
-        print("Check: No invalid variable name found")
+        #print("Check: No invalid variable name found")
+        pass
     
 
 
