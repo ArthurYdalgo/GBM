@@ -1,7 +1,7 @@
-canvas fundo(1920,1080,"white")    ;
-if(a<bc){
-    c=3;
-}
+   canvas fundo = square(1920,1080,"white")    ;
+  if(a<bc){
+    c=3.5;
+        }
 
 if(a==bf){
     c_82$$428jbjh$23$42423__23432=4;
