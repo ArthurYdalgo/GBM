@@ -25,16 +25,14 @@ def main():
     #Remocao de comentarios no final da linha
     source_code = comment_removal(source_code)
 
-    #Imprime código apos tratamentos
-    #print_code(source_code)
-
     #Varredura de caracteres
     source_code = charsAnalyser(source_code)
-    
+
+    #Imprime código apos tratamentos
+    print_code(source_code)
+
     #Transforma o código fonte em tokens
     token_source_code = toToken(source_code)
-
-    #print_token_code(token_source_code)
 
     #Checagem de nomeclatura de tokens de indentificação
     check_tokens_id_values(token_source_code)    
