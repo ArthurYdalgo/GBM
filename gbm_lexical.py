@@ -9,9 +9,16 @@ import os.path #biblioteca para verificação de existencia de arquivo
 #"Struct" de token, contendo linha e coluna. Dados a serem apresentados caso um caracter invalido seja
 #   encontrado
 class pypToken():
-    def __init__(self, token, value):
+    def __init__(self, token, value,line=1,collum=1):
         self.token = token
         self.value = value
+        self.line  = line
+        self.collum = collum
+    
+    def setPos(self,line,collum):
+        self.line = line
+        self.collum = collum
+    
         
 pypAlphabet = {}#Alfabeto (tipo dictionary)
 pypKeywords = {}#Palavras reservadas (tipo dictionary)
@@ -124,32 +131,89 @@ def split_by_separators(source_code):
         sys.exit()
     return splited_source_code
 
+
+# def toToken(source_code):
+#     global pypAlphabet
+#     global pypKeywords
+#     splited_source_code = split_by_separators(source_code)
+#     token_source_code = []   
+#     line_count=1 
+#     for line in splited_source_code:                
+#         if(len(line)>0):
+#             if(not(isnt_comment(line))):
+#                 token_obj = pypToken("comment",line[0])
+#                 token_obj.setPos(line_count,1)
+#                 token_source_code.append([token_obj])
+#             else:
+#                 new_line=[]
+#                 collum_count=1
+#                 for item in line:
+#                     if(item in pypAlphabet):
+#                         token_obj = pypToken(pypAlphabet[item],item)
+#                         token_obj.setPos(line_count,collum_count)
+#                         new_line.append(token_obj)
+#                     elif(item in pypKeywords):                        
+#                         token_obj = pypToken(pypKeywords[item],item)                        
+#                         token_obj.setPos(line_count,collum_count)
+#                         new_line.append(token_obj)
+#                     elif(is_a_number(item)):
+#                         token_obj = pypToken("numeral_token",item)
+#                         token_obj.setPos(line_count,collum_count)
+#                         new_line.append(token_obj)
+#                     elif(item.startswith('_str:')):
+#                         token_obj = pypToken("literal_token",item[5:])
+#                         token_obj.setPos(line_count,collum_count)
+#                         new_line.append(token_obj)
+#                     else:
+#                         token_obj = pypToken("id_token",item)
+#                         token_obj.setPos(line_count,collum_count)
+#                         new_line.append(token_obj)
+#                     collum_count+=1
+#                 token_source_code.append(new_line)                
+#         else:
+#             token_obj = pypToken("empty_line","")
+#             token_obj.setPos(line_count,1)
+#             token_source_code.append([token_obj]) 
+#         line_count+=1   
+#     return token_source_code
+
 #Transforma os elementos em tokens
 def toToken(source_code):
     global pypAlphabet
     global pypKeywords
     splited_source_code = split_by_separators(source_code)
-    token_source_code = []    
-    for line in splited_source_code:        
+    token_source_code = []   
+    line_count=1 
+    for line in splited_source_code:                
         if(len(line)>0):
             if(not(isnt_comment(line))):
-                token_source_code.append([pypToken("comment",line[0])])
+                token_obj = pypToken("comment",line[0],line_count)                
+                token_source_code.append([token_obj])
             else:
                 new_line=[]
+                collum_count=1
                 for item in line:
                     if(item in pypAlphabet):
-                        new_line.append(pypToken(pypAlphabet[item],item))
+                        token_obj = pypToken(pypAlphabet[item],item,line_count,collum_count)                        
+                        new_line.append(token_obj)
                     elif(item in pypKeywords):                        
-                        new_line.append(pypToken(pypKeywords[item],item))
+                        token_obj = pypToken(pypKeywords[item],item,line_count,collum_count)                          
+                        new_line.append(token_obj)
                     elif(is_a_number(item)):
-                        new_line.append(pypToken("numeral_token",item))
+                        token_obj = pypToken("numeral_token",item,line_count,collum_count)                        
+                        new_line.append(token_obj)
                     elif(item.startswith('_str:')):
-                        new_line.append(pypToken("literal_token",item[5:]))
+                        token_obj = pypToken("literal_token",item[5:],line_count,collum_count)                        
+                        new_line.append(token_obj)
                     else:
-                        new_line.append(pypToken("id_token",item))
-                token_source_code.append(new_line)
+                        token_obj = pypToken("id_token",item,line_count,collum_count)                        
+                        new_line.append(token_obj)
+                    collum_count+=1
+                token_source_code.append(new_line)                
         else:
-            token_source_code.append([pypToken("empty_line","")])    
+            token_obj = pypToken("empty_line","",line_count)            
+            token_source_code.append([token_obj]) 
+        line_count+=1   
     return token_source_code
 
 #Procura por "pyp_alphabet.json"
@@ -261,51 +325,54 @@ def print_code(source_code):
         print(line)
 
 #Imprime os tokens
-def print_token_code(token_source_code):
+def print_token_code(token_source_code,position=True):
     for line in token_source_code:
             for item in line:
-                print "{0}:'{1}' ".format(item.token,item.value),
+                if(position):
+                    print "{0}:'{1}'.({2},{3}) ".format(item.token,item.value,item.line,item.collum),
+                else:
+                    print "{0}:'{1}'".format(item.token,item.value),
             print 
 
-#Procura por chars que nao estao presentes no alfabeto
-#   retorna lista de inteiros referentes as linhas onde estao chars invalidos
-# def charsAnalyser(source_code):
-#     errors = []    
-#     line_count = 1
-#     for line in source_code:
-#         if(len(line)>0):
-#             if(isnt_comment(line)):                   
-#                 for char in line:            
-#                     if(not(char in pypAlphabet)):                
-
-#                         errors.append(line_count)
-#                         break
-#                         #errors.append(wrongChar(line_count,char_count))                    
-#         line_count+=1
-    
-#     if(len(errors)!=0):
-#         print("Error: Invalid characters found on")
-#         for error in errors:
-#             print("Line: {0}".format(error))          
-#         sys.exit()    
-
-def charsAnalyser(source_code):
-    warnings = {}       
-    for line_it in range(len(source_code)):
-        if(len(source_code[line_it])>0):
-            if(isnt_comment(source_code[line_it])):                   
-                char_it=0
-                while(char_it < len(source_code[line_it])):                
-                    if(not(source_code[line_it][char_it] in pypAlphabet)):                            
-                        source_code[line_it]= source_code[line_it][:char_it] + source_code[line_it][char_it + 1:]
-                        if(not(line_it in warnings)):
-                            warnings[line_it]=1
-                        else:
-                            warnings[line_it]+=1
-                        char_it-=1
-                    char_it+=1        
-    if(len(warnings)>0):
-        print("Warning: invalid character(s) found and removed from")
-        for warning in warnings:
-            print("Line {0}: {1} invalid character(s)".format(warning,warnings[warning]))
-    return source_code
+#Procura por chars que nao estao presentes no alfabeto. Flag de correção por padrão é verdadeira, a menos q função
+#   chamada seja chamada com parametro false
+def charsAnalyser(source_code,correction=True):
+    if(correction):
+        warnings = {}       
+        for line_it in range(len(source_code)):
+            if(len(source_code[line_it])>0):
+                if(isnt_comment(source_code[line_it])):                   
+                    char_it=0
+                    while(char_it < len(source_code[line_it])):                
+                        if(not(source_code[line_it][char_it] in pypAlphabet)):                            
+                            source_code[line_it]= source_code[line_it][:char_it] + source_code[line_it][char_it + 1:]
+                            if(not(line_it in warnings)):
+                                warnings[line_it]=1
+                            else:
+                                warnings[line_it]+=1
+                            char_it-=1
+                        char_it+=1        
+        if(len(warnings)>0):
+            print("Warning: invalid character(s) found and removed from")
+            for warning in warnings:
+                print("Line {0}: {1} invalid character(s)".format(warning,warnings[warning]))
+        return source_code
+    else:
+        errors = []    
+        line_count = 1
+        for line in source_code:
+            if(len(line)>0):
+                if(isnt_comment(line)):                   
+                    for char in line:            
+                        if(not(char in pypAlphabet)):                
+                            errors.append(line_count)
+                            break
+                            #errors.append(wrongChar(line_count,char_count))                    
+            line_count+=1
+        
+        if(len(errors)!=0):
+            print("Error: Invalid characters found on")
+            for error in errors:
+                print("Line: {0}".format(error))          
+            sys.exit() 
+        
