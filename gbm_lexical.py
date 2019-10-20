@@ -5,6 +5,7 @@ import sys #biblioteca para usar comandos de sistema
 import json #biblioteca para arquivos json
 import re #biblioteca de regex
 import os.path #biblioteca para verificação de existencia de arquivo
+from prettytable import PrettyTable #biblioteca para exibição de tabela de simbolos
 
 #"Struct" de token, contendo linha e coluna. Dados a serem apresentados caso um caracter invalido seja
 #   encontrado
@@ -131,6 +132,33 @@ def split_by_separators(source_code):
         sys.exit()
     return splited_source_code
 
+def create_symbol_table_map(token_source_code):
+    symbolTableMap = {}
+
+    for line in token_source_code:
+        for token in line:
+            if (token.token in symbolTableMap):
+                if(token.value in symbolTableMap[token.token]):
+                    symbolTableMap[token.token][token.value]+=1
+                else:                    
+                    symbolTableMap[token.token][token.value]=1
+            else:
+                symbolTableMap[token.token]= {}
+                symbolTableMap[token.token][token.value]=1
+
+    
+    return symbolTableMap
+
+def print_symbol_table(symbolTableMap):
+    symbolTable = PrettyTable(['Token Type', 'Token Value:number of occurrences'])
+    for token in symbolTableMap:
+        if(token != "comment" and token != "empty_line"):
+            symbolTable.add_row([token, symbolTableMap[token]])
+    print(symbolTable)
+    return symbolTable
+
+
+                    
 
 # def toToken(source_code):
 #     global pypAlphabet
@@ -177,6 +205,15 @@ def split_by_separators(source_code):
 #         line_count+=1   
 #     return token_source_code
 
+
+def shrink_token_source_code(token_source_code):
+    shrunk_source_code = []
+    for line in token_source_code:
+        for token in line:
+            if(token.token!="comment" and token.token != "empty_line"):
+                shrunk_source_code.append(token)
+    return shrunk_source_code
+
 #Transforma os elementos em tokens
 def toToken(source_code):
     global pypAlphabet
@@ -193,7 +230,7 @@ def toToken(source_code):
                 new_line=[]
                 collum_count=1
                 for item in line:
-                    if(item in pypAlphabet):
+                    if(item in pypAlphabet and pypAlphabet[item]!="letter"):
                         token_obj = pypToken(pypAlphabet[item],item,line_count,collum_count)                        
                         new_line.append(token_obj)
                     elif(item in pypKeywords):                        
@@ -325,7 +362,7 @@ def print_code(source_code):
         print(line)
 
 #Imprime os tokens
-def print_token_code(token_source_code,position=True):
+def print_token_source_code(token_source_code,position=True):
     for line in token_source_code:
             for item in line:
                 if(position):
@@ -333,6 +370,15 @@ def print_token_code(token_source_code,position=True):
                 else:
                     print "{0}:'{1}'".format(item.token,item.value),
             print 
+
+def print_token_code(token_code,position=True):    
+
+    for item in token_code:            
+        if(position):
+            print "{0}:'{1}'.({2},{3}) ".format(item.token,item.value,item.line,item.collum),
+        else:
+            print "{0}:'{1}'".format(item.token,item.value),
+    print
 
 #Procura por chars que nao estao presentes no alfabeto. Flag de correção por padrão é verdadeira, a menos q função
 #   chamada seja chamada com parametro false
