@@ -12,14 +12,17 @@ mathElements_list = ['+','-','/','*','%','^']
 
 logicElements_list = ['<','>','<=','==','>=','!']
 
-separators_list = ['(',')','[',']','{','}','"','\'','.',';',',',':']
+separators_list = ['(',')','[',']','{','}','"','\'','.',',',':']
+#separators_list = ['(',')','[',']','{','}','"','\'','.',';',',',':']
 
 commentTag = '#'
 attribution_tag = "="
+semicolon_tag = ";"
 
 pypAlphabet = {}
 pypAlphabet[commentTag] = "comment_tag"
 pypAlphabet[attribution_tag] = "attribution_token"
+pypAlphabet[semicolon_tag] = "semicolon"
 
 for element in digits_list:
     pypAlphabet[element] = "digit"
