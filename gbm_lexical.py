@@ -93,6 +93,9 @@ def split_by_separators(source_code):
             while(item<len(splited_line)):                
                 if(splited_line[item]=="\""):
                     flag = item+1
+                    if(flag==len(splited_line)):
+                        unclosed_strings.append(line_count)                        
+                        break
                     while(splited_line[flag]!="\""):                        
                         flag+=1
                         if(flag==len(splited_line)):
