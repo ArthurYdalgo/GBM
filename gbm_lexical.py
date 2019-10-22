@@ -113,7 +113,7 @@ def split_by_separators(source_code):
             #Junta elementos logicos 
             item=0           
             while(item<len(splited_line)):                
-                if(splited_line[item]=="=" or splited_line[item] == "<" or splited_line[item] == ">"):   
+                if(splited_line[item]=="=" or splited_line[item] == "<" or splited_line[item] == ">" or splited_line[item] == "!"):   
                     try:                        
                         if(splited_line[item+1]=="="):                                                        
                             new_logic = splited_line[item]+"="                                                        
@@ -368,10 +368,11 @@ def print_code(source_code):
 def print_token_source_code(token_source_code,position=True):
     for line in token_source_code:
             for item in line:
-                if(position):
-                    print "{0}:'{1}'.({2},{3}) ".format(item.token,item.value,item.line,item.collum),
-                else:
-                    print "{0}:'{1}'".format(item.token,item.value),
+                if(item.token!="comment" and item.token!="empty_line"):
+                    if(position):
+                        print "{0}:'{1}'.({2},{3}) ".format(item.token,item.value,item.line,item.collum),
+                    else:
+                        print "{0}:'{1}'".format(item.token,item.value),
             print 
 
 def print_token_code(token_code,position=True):    
@@ -404,7 +405,7 @@ def charsAnalyser(source_code,correction=True):
         if(len(warnings)>0):
             print("Warning: invalid character(s) found and removed from")
             for warning in warnings:
-                print("Line {0}: {1} invalid character(s)".format(warning,warnings[warning]))
+                print("Line {0}: {1} invalid character(s)".format((warning+1),warnings[warning]))
         return source_code
     else:
         errors = []    
