@@ -10,7 +10,7 @@ letters_list = lowerCase_list+upperCase_list
 
 mathElements_list = ['+','-','/','*','%','^']
 
-logicElements_list = ['<','>','<=','==','>=','!']
+logicElements_list = ['<','>','<=','==','>=','!=']
 
 separators_list = ['(',')','[',']','{','}','"','\'','.',',',':']
 #separators_list = ['(',')','[',']','{','}','"','\'','.',';',',',':']
