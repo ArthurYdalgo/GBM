@@ -7,12 +7,13 @@ int c_82;
 canvas fundo;
 string nome;
 end elements;
+
 begin action;
 a=7;
 nome = "oi";
 bc = 9;
 bf  =10;
-   fundo = square(1920,1080,"white")    ;
+   fun$d$$o = square(1920,1080,"white")    ;
   if(a<bc){
     c=3.5;
         }
