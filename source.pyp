@@ -1,4 +1,4 @@
-begin elements;
+elements;
 int a;
 int bc;
 int    bf;
@@ -6,9 +6,9 @@ float c;
 int c_82;
 canvas fundo;
 string nome;
-end elements;
 
-begin action;
+
+begin;
 a=7;
 nome = "oi";
 bc = 9;
@@ -31,4 +31,4 @@ if(a==bf){
     fundo.draw( square(20,20,"black"));#svbweuyvfuªª
  fundo.export("teste de final","png");
  #comentario
- end action;
+ end;
