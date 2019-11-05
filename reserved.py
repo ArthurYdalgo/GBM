@@ -23,7 +23,6 @@ begin_token = 'begin'
 end_token = 'end'
 
 elements_token = 'elements'
-action_token = 'action'
 
 pypKeywords = {}
 pypKeywords[return_token] = "return_token"
@@ -31,7 +30,6 @@ pypKeywords[canvas_token] = "canvas_token"
 pypKeywords[begin_token] = "begin_token"
 pypKeywords[end_token] = "end_token"
 pypKeywords[elements_token] = "element_token"
-pypKeywords[action_token] = "action_token"
 
 
 
