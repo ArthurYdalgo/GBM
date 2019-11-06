@@ -25,8 +25,8 @@ BNF
 return::= return <identifier>| return <function> | return <operation> | return <assignment>”;”
 
 >Ints, Floats, String (OK)
-<float> ::= <digit> ,{<digit>},”.”,<digit>,{<digit>};
-<int> ::= <digit>,{<digit>};
+<float> ::= [“+”|”-”],<digit> ,{<digit>},”.”,<digit>,{<digit>};
+<int> ::= [“+”|”-”],<digit>,{<digit>};
 <literal_token> ::= “True” | “False” | <string>
 <string> ::= “” | {<alphabet>-’#’}+ 
 <alphabet> ::= <letter>|<digit> | <math_operator> | <logic_operator> |<separator> | “;” | “=”;  
@@ -64,9 +64,11 @@ return::= return <identifier>| return <function> | return <operation> | return <
 <loop_token> ::= <for> | <while>
 
 > For (OK)
-<for_statement>::=  “for”,”(“,<assignment>,{",",<assignment>},";",
-<conditional>,";",
-assignment,{",",<assignment>},“)“,“{“,{<code_instructions>,";"},”}”
+> For (OK)
+<for_statement>::=  “for”,<id_token>,”from”,(<int>|<float>),”to”,(<int>|<float>),”step”,(<int>|<float>),“{“,
+{<code_instructions>},
+”}”
+
 
 > While (OK)
 <while_statement>::= “while”,”(“,{<conditional>}|{<identifier>}|<literal_token>|<operation>”)”, “{“code_instructions”}”
