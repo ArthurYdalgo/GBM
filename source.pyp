@@ -1,4 +1,4 @@
-elements;
+var;
 int a;
 int bc;
 int    bf;
@@ -13,7 +13,7 @@ a=7;
 nome = "oi";
 bc = 9;
 bf  =10;
-   fun$d$$o = square(1920,1080,"white")    ;
+   fundo = square(1920,1080,"white")    ;
   if(a<bc){
     c=3.5;
         }
