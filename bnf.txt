@@ -1,7 +1,6 @@
 BNF
 
 > Variáveis
-
 <identifier> ::= <letter> , { <letter> | <digit> | "_" } ;
 <letter> ::= "A" | "B" | "C" | "D" | "E" | "F" | "G"
        | "H" | "I" | "J" | "K" | "L" | "M" | "N"
@@ -14,51 +13,67 @@ BNF
 <digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 
 > Código Base
-<code> ::= “begin elements;” , <variable_declarations> , “end elements; begin action;” , <code_instructions> , “end action;”
+<code> ::= “var” , {<variable_declarations>} , “begin” , {<code_instructions>,”;”} , “end”
 
->Retorno
-return::= return <identifier>| return <function> | return <operation> | return <assignment>;
+>Declaração de variáveis (OK)
+<variable_declarations> ::= <dataType_token>,<id_token>,{“,”,<id_token>},”;”;
 
-> Atribuição
-assignment ::= <identifier>, {<identifier>} = <string> | <integer> | <function> | <floating_point> | <boolean> | <sketch_type> , {<string> | <integer> | <function> | <floating_point> | <boolean> | <sketch_type> };
+>Declaração de variáveis (OK)
+<code_instructions>::= <assignment> | <loop_token> | <if_statement> | <drawing_action> 
 
-> Sketch Type
-<sketch_type> ::= 
-(“tree(”,<integer>,”,”,<integer>,”,” , <string> ,”,” , <string>, “)”) | 
-(“swarm(“,<floating_point>,”,”,<floating_point>,”,”,<string>,”)”)|
-(“web(”,<integer>,”,” , <integer> ,"," , <string> , “)”) | 
-(“square(”,<integer>,”,”,<integer>,”,” , <string> , “)”) | 
-(“circle(”,<integer>,”,” , <string> , “)”) | 
+>Retorno (nao tenho ctz se precisa)
+return::= return <identifier>| return <function> | return <operation> | return <assignment>”;”
 
-> Declaração
-declaration ::= <data_type_list> <identifier>, {<identifier>} = <letter> | <digit> | <function>, {<letter> | <digit> | <function>};
+>Ints, Floats, String (OK)
+<float> ::= <digit> ,{<digit>},”.”,<digit>,{<digit>};
+<int> ::= <digit>,{<digit>};
+<literal_token> ::= “True” | “False” | <string>
+<string> ::= “” | {<alphabet>-’#’}+ 
+<alphabet> ::= <letter>|<digit> | <math_operator> | <logic_operator> |<separator> | “;” | “=”;  
 
-> Funções 
-function ::= <data_type_list> <identifier> ({<identifier>}|{<function>}){<code_instructions> <return>;}
+> Atribuição (OK)
+<assignment> ::= <identifier>, {“,”,<identifier>} ,”=”,( <string> | <integer> | <function> | <float> | <boolean> | <sketch_type> | <operation>)
 
-> Operação
-operation::= <identifier><mathElements_list><identifier> | <function><mathElements_list><identifier>
+> Sketch Type (OK)
+<sketch_type> ::= (
+(“tree”,”(”,<integer>,”,”,<integer>,”,” , <string> ,”,” , <string>, “)”) | 
+(“swarm”,”(“,<floating_point>,”,”,<floating_point>,”,”,<string>,”)”)|
+(“web”,”(”,<integer>,”,” , <integer> ,"," , <string> , “)”) | 
+(“square”,”(”,<integer>,”,”,<integer>,”,” , <string> , “)”) | 
+(“circle”,”(”,<integer>,”,” , <string> , “)”)
+);
 
-> Condicional
-conditional::= {<identifier><logicElements_list><identifier>}| {<identifier><logicElements_list><identifier><logic_list><identifier><logicElements_list><identifier>}| <assignment> | <operation>
+> Declaração (OK)
+<declaration> ::= <dataType_token>, <identifier>, {“,”,<identifier>},”;”
 
->Laços de Repetição
-loop_token ::= <for> | <while>
+> Funções (OK)
+<function> ::= <data_type_list> <identifier> ({<identifier>}|{<function>}){<code_instructions> <return>;}
 
-> For
-for::= for ( {<identifier>}|<> ; {<conditional>} ; {<identifier>} | {<identifier><math_operator><math_operator>} | {<function>} ) {<code_instructions>}
+>Drawing Action (OK)
+<drawing_action> ::= <id_token>,”.”,”draw”,”(“,
+(<sketch_type> | <id_token>),
+”,” ,<integer>, ”,” ,<integer>, ”)”
 
-> While
-while::= while({<conditional>}|{<identifier>}| <literal_list>) {code_instructions}
+> Operação (OK)
+<operation>::= <identifier><mathElements_list><identifier> | <function><mathElements_list><identifier> | <identifier><mathElements_list><mathElements_list>
 
-> If
-if::= if({<conditional>}|{<identifier>}) {code_instructions}
+> Condicional (OK)
+<conditional>::= {<identifier><logicElements_list><identifier>}|       {<conditional><logicElements_list><identifier>}| {<assignment>} | {<operation>}|<identifier>
 
-> Else
-else::= if({<conditional>}|{<identifier>}){code_instructions} else({<conditional>}|{<identifier>}) {code_instructions}
+>Laços de Repetição (OK)
+<loop_token> ::= <for> | <while>
 
-> Else if
-else if::= if({<conditional>}|{<identifier>}){code_instructions} else if({<conditional>}|{<identifier>}) {code_instructions}
+> For (OK)
+<for_statement>::=  “for”,”(“,<assignment>,{",",<assignment>},";",
+<conditional>,";",
+assignment,{",",<assignment>},“)“,“{“,{<code_instructions>,";"},”}”
 
-> Switch Case
-(precisa mesmo disso?)
+> While (OK)
+<while_statement>::= “while”,”(“,{<conditional>}|{<identifier>}|<literal_token>|<operation>”)”, “{“code_instructions”}”
+
+> If  (OK)
+<if_statement>::="if","(",<conditional>,")","{",{<code_instructions>},"}",
+{"elif","(",<conditional>,")","{",{<code_instructions>},"}"},
+["else","{",{<code_instructions>},"}"]
+
+
