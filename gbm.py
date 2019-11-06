@@ -53,7 +53,7 @@ def main():
     #print_token_code(token_code)
 
     #===== Análise Sintática
-    parser(token_code)
+    token_code = parser(token_code)
     #variable_map = variable_mapper(token_source_code)
     
 
