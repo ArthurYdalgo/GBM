@@ -13,6 +13,7 @@ a=7;
 nome = "oi";
 bc = 9;
 bf  =10;
+c = 33.4;
    fundo = square(1920,1080,"white")    ;
   if(a<bc){
     c=3.5;
