@@ -87,7 +87,19 @@ def split_by_separators(source_code):
             splited_line = re.split('(\W)', line)
             #Opcional: remover o espaço como separador 
             splited_line = filter(lambda a: a != " ", splited_line)     
-            splited_line = filter(lambda a: a != "", splited_line)           
+            splited_line = filter(lambda a: a != "", splited_line) 
+            #Junta elementos que formam floats
+            item=0           
+            while(item<len(splited_line)):                
+                if(is_a_number(splited_line[item])):   
+                    try:                        
+                        if(splited_line[item+1]=="." and is_a_number(splited_line[item+2])):
+                            new_logic = splited_line[item]+"."+splited_line[item+2]                      
+                            del splited_line[item:item+3]                            
+                            splited_line.insert(item,new_logic)                                                        
+                    except:
+                        pass                
+                item+=1                  
             #Junta elementos que formam string        
             item = 0
             while(item<len(splited_line)):                
@@ -233,15 +245,19 @@ def toToken(source_code):
                 new_line=[]
                 collum_count=1
                 for item in line:
-                    if(item in pypAlphabet and pypAlphabet[item]!="letter"):
+                    if(item in pypAlphabet and pypAlphabet[item]!="letter" and pypAlphabet[item]!="digit"):
                         token_obj = pypToken(pypAlphabet[item],item,line_count,collum_count)                        
                         new_line.append(token_obj)
                     elif(item in pypKeywords):                        
                         token_obj = pypToken(pypKeywords[item],item,line_count,collum_count)                          
                         new_line.append(token_obj)
                     elif(is_a_number(item)):
-                        token_obj = pypToken("numeral_token",item,line_count,collum_count)                        
-                        new_line.append(token_obj)
+                        if(type(eval(item)) is int):
+                            token_obj = pypToken("integer",item,line_count,collum_count)                        
+                            new_line.append(token_obj)
+                        else:
+                            token_obj = pypToken("float",item,line_count,collum_count)                        
+                            new_line.append(token_obj)
                     elif(item.startswith('_str:')):
                         token_obj = pypToken("literal_token",item[5:],line_count,collum_count)                        
                         new_line.append(token_obj)
@@ -259,21 +275,21 @@ def toToken(source_code):
 #Procura por "pyp_alphabet.json"
 def load_alphabet_from_json():
     try:
-        with open('gbm_alphabet.json') as f:
+        with open('Alphabet/gbm_alphabet.json') as f:
             global pypAlphabet
             pypAlphabet = json.load(f)                    
     except:
-        print("Error: Alphabet file 'gbm_alphabet.json' not found. Run 'python alphabet.py' to generate it.")
+        print("Error: Alphabet file 'gbm_alphabet.json' not found in directort 'Alphabet'. Run 'python alphabet_generator.py' to generate it.")
         sys.exit()
 
 #Procura por "pyp_reserved.json"
 def load_keywords_from_json():
     try:
-        with open('gbm_reserved.json') as f:
+        with open('Reserved/gbm_reserved.json') as f:
             global pypKeywords
             pypKeywords = json.load(f)        
     except:
-        print("Error: Keywords file 'gbm_reserved.json' not found. Run 'python reserved.py' to generate it.")
+        print("Error: Keywords file 'gbm_reserved.json' not found in directory 'Reserved'. Run 'python reserved_generator.py' to generate it.")
         sys.exit()
 
 #Le o nome do arquivo entrado depois do script no terminal
