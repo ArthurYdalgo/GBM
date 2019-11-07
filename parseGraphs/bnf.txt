@@ -1,0 +1,81 @@
+BNF
+
+> Variáveis
+<identifier> ::= <letter> , { <letter> | <digit> | "_" } ;
+<letter> ::= "A" | "B" | "C" | "D" | "E" | "F" | "G"
+       | "H" | "I" | "J" | "K" | "L" | "M" | "N"
+       | "O" | "P" | "Q" | "R" | "S" | "T" | "U"
+       | "V" | "W" | "X" | "Y" | "Z" | "a" | "b"
+       | "c" | "d" | "e" | "f" | "g" | "h" | "i"
+       | "j" | "k" | "l" | "m" | "n" | "o" | "p"
+       | "q" | "r" | "s" | "t" | "u" | "v" | "w"
+       | "x" | "y" | "z" ;
+<digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+
+> Código Base
+<code> ::= “var” , {<variable_declarations>} , “begin” , {<code_instructions>,”;”} , “end”
+
+>Declaração de variáveis (OK)
+<variable_declarations> ::= <dataType_token>,<id_token>,{“,”,<id_token>},”;”;
+
+>Declaração de variáveis (OK)
+<code_instructions>::= <assignment> | <loop_token> | <if_statement> | <drawing_action> 
+
+>Retorno (nao tenho ctz se precisa)
+return::= return <identifier>| return <function> | return <operation> | return <assignment>”;”
+
+>Ints, Floats, String (OK)
+<float> ::= [“+”|”-”],<digit> ,{<digit>},”.”,<digit>,{<digit>};
+<int> ::= [“+”|”-”],<digit>,{<digit>};
+<literal_token> ::= “True” | “False” | <string>
+<string> ::= “” | {<alphabet>-’#’}+ 
+<alphabet> ::= <letter>|<digit> | <math_operator> | <logic_operator> |<separator> | “;” | “=”;  
+
+> Atribuição (OK)
+<assignment> ::= <identifier>, {“,”,<identifier>} ,”=”,( <string> | <integer> | <float> | <boolean> | <sketch_type> | <operation>)
+
+> Sketch Type (OK)
+<sketch_type> ::= (
+(“tree”,”(”,"X",<integer>,"Y",<integer>,"TRUNK",<string> ,"LEAF" , <string>, “)”) | 
+(“swarm”,”(“,"X",<integer>,"Y",<integer>,"RATE",<string> ,"COLOR" , <string>, ”)”)|
+(“web”,”(”,"X",<integer>,”Y” , <integer> ,"COLOR" , <string> , “)”) | 
+(“square”,”(”,"X",<integer>,”Y”,<integer>,”COLOR” , <string> , “)”) | 
+(“circle”,”(”,"RADIUS",<integer>,”COLOR” , <string> , “)”)
+);
+
+> Declaração (OK)
+<declaration> ::= <dataType_token>, <identifier>, {“,”,<identifier>},”;”
+
+> Funções (OK)
+<function> ::= <data_type_list> <identifier> ({<identifier>}|{<function>}){<code_instructions> <return>;}
+
+>Drawing Action (OK)
+<drawing_action> ::= <id_token>,”.”,”draw”,”(“,
+(<sketch_type> | <id_token>),
+”X” ,<integer>, ”Y” ,<integer>, ”)”
+
+> Operação (OK)
+<operation>::= <identifier><mathElements_list><identifier> | <function><mathElements_list><identifier> | <identifier><mathElements_list><mathElements_list>
+
+> Condicional (OK)
+<conditional>::= {<identifier><logicElements_list><identifier>}|       {<conditional><logicElements_list><identifier>}| {<assignment>} | {<operation>}|<identifier>
+
+>Laços de Repetição (OK)
+<loop_token> ::= <for> | <while>
+
+> For (OK)
+> For (OK)
+<for_statement>::=  “for”,<id_token>,”from”,(<int>|<float>),”to”,(<int>|<float>),”step”,(<int>|<float>),“{“,
+{<code_instructions>},
+”}”
+
+
+> While (OK)
+<while_statement>::= “while”,”(“,{<conditional>}|{<identifier>}|<literal_token>|<operation>”)”, “{“code_instructions”}”
+
+> If  (OK)
+<if_statement>::="if","(",<conditional>,")","{",{<code_instructions>},"}",
+{"elif","(",<conditional>,")","{",{<code_instructions>},"}"},
+["else","{",{<code_instructions>},"}"]
+
+
