@@ -9,6 +9,15 @@ listOfGraphs=["base_code","variable_declaration"]
 
 graphs = {}
 
+#exportação dos grafos de derivação
+def exportGraph():
+    """
+    Exports graphs to '.gml' files
+    """
+    global graphs
+    for graph in graphs:        
+        nx.write_gml(graphs[graph], "parseGraphs/{0}.gml".format(unTokenName(graph)))
+
 def unTokenName(name):
     return name[1:len(name)-1]
 
@@ -39,7 +48,6 @@ def generateParseGraph():
     name = "<variable_declaration>"
     graphs[name] = nx.DiGraph()
 
-
     connectTokenToTokens(name,"<variable_declaration>",data_type_list)
     for dataType in data_type_list:
         connectTokenToTokens(name,dataType,"<id_token>")
@@ -49,11 +57,6 @@ def generateParseGraph():
 
     
 
-#exportação dos grafos de derivação
-def exportGraph():
-    global graphs
-    for graph in graphs:        
-        nx.write_gml(graphs[graph], "parseGraphs/{0}.gml".format(unTokenName(graph)))
 
 try:
     if(sys.argv[1]=="run"):    
