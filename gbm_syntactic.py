@@ -1,7 +1,27 @@
 # -*- coding: utf-8 -*-
 
 import sys #biblioteca para usar comandos de sistema
-from parseBNF import * #BNF transformada em grafo
+from Reserved.reserved import *
+import networkx as nx
+import matplotlib.pyplot as plt
+from parseBNF import listOfGraphs
+
+def isnt_Terminal(token_type):
+    if(token_type[0]=="<" and token_type[len(token_type)-1]==">"):
+        return True
+    else:
+        return False
+
+derivations={}
+
+shortcut = {}
+
+for graph in listOfGraphs:
+    filename = 'parseGraphs/{0}.gml'.format(graph)    
+    name = "<{0}>".format(graph)
+    derivations[name] = nx.read_gml(filename)
+
+#shortcut["for"] = derivations["<for_statement>"]
 
 #Syntax parser
 def parser(token_code):
@@ -12,25 +32,25 @@ def parser(token_code):
     else:
         return token_code
 
-# if(nToken in base_code[cToken]):
-#     print("Current token: {0}".format(nToken))
-# else:
-#     print("Unexpect '{0}' in line {1}, after '{2}' (line {3}).".format(nToken,nTokenLine,cToken,cTokenLine))
 
 def graphParse(token_code):
     error={}
+    scopeProbe=0
+    cToken = token_code[0]
+    cTokenIndex = 0    
+    #while(True):
 
 
 
     return error
 
-plt.figure("<base_code>")
-nx.draw(base_code, with_labels=True, font_weight='bold')
+for graph in derivations:
+    plt.figure(graph)
+    nx.draw(derivations[graph], with_labels=True, font_weight='bold')
+#plt.show()
 
-plt.figure("<variable_declaration>")
-nx.draw(variable_declaration, with_labels=True, font_weight='bold')
 
-plt.show()
+
     
 
 
