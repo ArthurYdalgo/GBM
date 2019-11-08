@@ -12,7 +12,7 @@ graphs = {}
 #exportação dos grafos de derivação
 def exportGraph():
     """
-    Exports graphs to '.gml' files
+    Exports graphs to '.gml' files1
     """
     global graphs
     for graph in graphs:        
@@ -35,7 +35,7 @@ def generateParseGraph():
     global graphs
     name = "<base_code>"
     graphs[name] = nx.DiGraph()
-
+    connectTokenToTokens(name,name,"var")
     connectTokenToTokens(name,"var","begin")
     connectTokenToTokens(name,"var","<variable_declaration>")
     connectTokenToTokens(name,"<variable_declaration>","begin")
@@ -43,16 +43,23 @@ def generateParseGraph():
     connectTokenToTokens(name,"<code_instruction>","<code_instruction>")
     connectTokenToTokens(name,"<code_instruction>","end")
 
+    # if("end" in graphs["<base_code>"]["var"]):
+    #     print("caminho")
+    # else:  
+    #     print("erro")
+
 
     #<variable_declaration>
     name = "<variable_declaration>"
     graphs[name] = nx.DiGraph()
 
-    connectTokenToTokens(name,"<variable_declaration>",data_type_list)
+    connectTokenToTokens(name,name,data_type_list)
+    connectTokenToTokens(name,name,"canvas")
     for dataType in data_type_list:
         connectTokenToTokens(name,dataType,"<id_token>")
+    connectTokenToTokens(name,"canvas","<id_token>")
     connectTokenToTokens(name,"<id_token>",",")
-    connectTokenToTokens(name,"<id_token>",";")
+    connectTokenToTokens(name,"<id_token>",";")    
     connectTokenToTokens(name,",","<id_token>")
 
     
