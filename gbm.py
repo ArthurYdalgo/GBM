@@ -39,7 +39,7 @@ def main():
     #Checagem de nomeclatura de tokens de indentificação
     check_tokens_id_values(token_source_code)    
 
-    #print_token_source_code(token_source_code)
+    #print_token_source_code(token_source_code,False)
 
     #Transforma "token_source_code" em uma tabela de simbolos
     symbolTableMap = create_symbol_table_map(token_source_code)
