@@ -1,14 +1,14 @@
-var;
+var
 int a;
-int bc;
+int bc,fgerg;
+int wfef;
 int    bf;
 float c;
 int c_82;
 canvas fundo;
 string nome;
-
-
-begin;
+string a_;
+begin
 a=7;
 nome = "oi";
 bc = 9;
@@ -32,4 +32,4 @@ if(a==bf){
     fundo.draw( square(20,20,"black"));#svbweuyvfuªª
  fundo.export("teste de final","png");
  #comentario
- end;
+ end
