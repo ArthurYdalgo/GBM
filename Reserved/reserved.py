@@ -23,4 +23,4 @@ canvas_token = 'canvas'
 begin_token = 'begin'
 end_token = 'end'
 
-elements_token = 'elements'
+elements_token = 'var'
