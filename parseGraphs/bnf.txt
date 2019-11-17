@@ -12,47 +12,56 @@ BNF
        | "x" | "y" | "z" ;
 <digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 
-> Código Base
+> Código Base (DONE)
 <code> ::= “var” , {<variable_declarations>} , “begin” , {<code_instructions>,”;”} , “end”
 
->Declaração de variáveis (OK)
+>Declaração de variáveis (OK) (DONE)
 <variable_declarations> ::= <dataType_token>,<id_token>,{“,”,<id_token>},”;”;
 
->Declaração de variáveis (OK)
+>Instruções de codigo (OK) (DONE, shorcuts)
 <code_instructions>::= <assignment> | <loop_token> | <if_statement> | <drawing_action> 
 
 >Retorno (nao tenho ctz se precisa)
 return::= return <identifier>| return <function> | return <operation> | return <assignment>”;”
 
->Ints, Floats, String (OK)
+>Ints, Floats, String (OK) (DONE)
 <float> ::= [“+”|”-”],<digit> ,{<digit>},”.”,<digit>,{<digit>};
 <int> ::= [“+”|”-”],<digit>,{<digit>};
 <literal_token> ::= “True” | “False” | <string>
 <string> ::= “” | {<alphabet>-’#’}+ 
 <alphabet> ::= <letter>|<digit> | <math_operator> | <logic_operator> |<separator> | “;” | “=”;  
 
-> Atribuição (OK)
+> Atribuição (OK) (DONE)
 <assignment> ::= <identifier>, {“,”,<identifier>} ,”=”,( <string> | <integer> | <float> | <boolean> | <sketch_type> | <operation>)
 
-> Sketch Type (OK)
+> Sketch Type (OK) (DONE)
 <sketch_type> ::= (
 (“tree”,”(”,"X",<integer>,"Y",<integer>,"TRUNK",<string> ,"LEAF" , <string>, “)”) | 
-(“swarm”,”(“,"X",<integer>,"Y",<integer>,"RATE",<string> ,"COLOR" , <string>, ”)”)|
+(“swarm”,”(“,"X",<integer>,"Y",<integer>,"RATE",<numeric> ,"COLOR" , <string>, ”)”)|
 (“web”,”(”,"X",<integer>,”Y” , <integer> ,"COLOR" , <string> , “)”) | 
 (“square”,”(”,"X",<integer>,”Y”,<integer>,”COLOR” , <string> , “)”) | 
 (“circle”,”(”,"RADIUS",<integer>,”COLOR” , <string> , “)”)
 );
 
-> Declaração (OK)
+> Declaração (OK) (DONE)
 <declaration> ::= <dataType_token>, <identifier>, {“,”,<identifier>},”;”
 
 > Funções (OK)
 <function> ::= <data_type_list> <identifier> ({<identifier>}|{<function>}){<code_instructions> <return>;}
 
->Drawing Action (OK)
-<drawing_action> ::= <id_token>,”.”,”draw”,”(“,
-(<sketch_type> | <id_token>),
-”X” ,<integer>, ”Y” ,<integer>, ”)”
+>Drawing Action (OK) (DONE)
+<drawing_action> ::= "draw","(",<id_token>, "IN",<id_token>,"X",<int>,"Y",<int>,")"
+
+>Erase Action (OK) (DONE)
+<erase_action> ::= "erase","(",<id_token>,")"
+
+>Import Action (OK)
+<import_action> ::= "import","(",<literal_token>,"in",<id_token>,")",";";
+
+>Export Action (OK)
+<import_action> ::= "export","(",<id_token>,"to",<literal_token>,")",";";
+
+
 
 > Operação (OK)
 <operation>::= <identifier><mathElements_list><identifier> | <function><mathElements_list><identifier> | <identifier><mathElements_list><mathElements_list>
