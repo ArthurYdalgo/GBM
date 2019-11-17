@@ -5,17 +5,14 @@ from Alphabet.alphabet import *
 import networkx as nx
 import matplotlib.pyplot as plt
 
-listOfGraphs=["base_code","variable_declaration"]
+listOfGraphs=["base_code","variable_declaration","attribution","draw","erase"]
 
 graphs = {}
 
 #exportação dos grafos de derivação
 def exportGraph():
-    """
-    Exports graphs to '.gml' files1
-    """
     global graphs
-    for graph in graphs:        
+    for graph in graphs:          
         nx.write_gml(graphs[graph], "parseGraphs/{0}.gml".format(unTokenName(graph)))
 
 def unTokenName(name):
@@ -37,17 +34,21 @@ def generateParseGraph():
     graphs[name] = nx.DiGraph()
     connectTokenToTokens(name,name,"var")
     connectTokenToTokens(name,"var","begin")
-    connectTokenToTokens(name,"var","<variable_declaration>")
-    connectTokenToTokens(name,"<variable_declaration>","begin")
+    connectTokenToTokens(name,"var",data_type_list)
+    connectTokenToTokens(name,";",data_type_list)
+    connectTokenToTokens(name,"var","canvas")
+    connectTokenToTokens(name,";","canvas")
+    for dataType in data_type_list:
+        connectTokenToTokens(name,dataType,"<id_token>")
+    connectTokenToTokens(name,"canvas","<id_token>")
+    connectTokenToTokens(name,"<id_token>",",")
+    connectTokenToTokens(name,"<id_token>",";")  
+    connectTokenToTokens(name,";","begin")  
+    
+    connectTokenToTokens(name,",","<id_token>")
     connectTokenToTokens(name,"begin","<code_instruction>")
     connectTokenToTokens(name,"<code_instruction>","<code_instruction>")
     connectTokenToTokens(name,"<code_instruction>","end")
-
-    # if("end" in graphs["<base_code>"]["var"]):
-    #     print("caminho")
-    # else:  
-    #     print("erro")
-
 
     #<variable_declaration>
     name = "<variable_declaration>"
@@ -60,9 +61,121 @@ def generateParseGraph():
     connectTokenToTokens(name,"canvas","<id_token>")
     connectTokenToTokens(name,"<id_token>",",")
     connectTokenToTokens(name,"<id_token>",";")    
-    connectTokenToTokens(name,",","<id_token>")
-
+    connectTokenToTokens(name,",","<id_token>")   
+        
+    #atribuição
+    name = "<attribution>"
+    graphs[name] = nx.DiGraph()
     
+    connectTokenToTokens(name,name,"<id_token>")    
+    connectTokenToTokens(name,"<id_token>",",")    
+    connectTokenToTokens(name,"<id_token>","=")
+    connectTokenToTokens(name,",","<id_token>")        
+    connectTokenToTokens(name,"=","<operation>")   
+    connectTokenToTokens(name,"<operation>",";")    
+    connectTokenToTokens(name,"=","<literal_token>")
+    connectTokenToTokens(name,"<literal_token>",";")
+    connectTokenToTokens(name,"=","<sketch_type>")
+    connectTokenToTokens(name,"<sketch_type>",";")
+
+    #sketchType Circle
+    name = "<circle>"
+    graphs[name] = nx.DiGraph()
+    connectTokenToTokens(name,name,"circle")
+    connectTokenToTokens(name,"circle","(")
+    connectTokenToTokens(name,"(","RADIUS")
+    connectTokenToTokens(name,"RADIUS","<int>")
+    connectTokenToTokens(name,"<int>","COLOR")
+    connectTokenToTokens(name,"COLOR","<literal_token>")
+    connectTokenToTokens(name,"<literal_token>",")")    
+    
+    #sketchType Square
+    name = "<square>"
+    graphs[name] = nx.DiGraph()
+    connectTokenToTokens(name,name,"square")
+    connectTokenToTokens(name,"square","(")
+    connectTokenToTokens(name,"(","X")
+    connectTokenToTokens(name,"X","<int>X")
+    connectTokenToTokens(name,"<int>X","Y")
+    connectTokenToTokens(name,"Y","<int>Y")
+    connectTokenToTokens(name,"<int>Y","COLOR")
+    connectTokenToTokens(name,"COLOR","<literal_token>")
+    connectTokenToTokens(name,"<literal_token>",")")    
+
+    #sketchType Web
+    name = "<web>"
+    graphs[name] = nx.DiGraph()
+    connectTokenToTokens(name,name,"web")
+    connectTokenToTokens(name,"web","(")
+    connectTokenToTokens(name,"(","X")
+    connectTokenToTokens(name,"X","<int>X")
+    connectTokenToTokens(name,"<int>X","Y")
+    connectTokenToTokens(name,"Y","<int>Y")
+    connectTokenToTokens(name,"<int>Y","COLOR")
+    connectTokenToTokens(name,"COLOR","<literal_token>")
+    connectTokenToTokens(name,"<literal_token>",")")    
+    
+
+    #sketchType Swarm
+    name = "<swarm>"
+    graphs[name] = nx.DiGraph()
+    connectTokenToTokens(name,name,"swarm")
+    connectTokenToTokens(name,"swarm","(")
+    connectTokenToTokens(name,"(","X")
+    connectTokenToTokens(name,"X","<int>X")
+    connectTokenToTokens(name,"<int>X","Y")
+    connectTokenToTokens(name,"Y","<int>Y")
+    connectTokenToTokens(name,"<int>Y","RATE")
+    connectTokenToTokens(name,"RATE","<int>R")
+    connectTokenToTokens(name,"RATE","<float>R")
+    connectTokenToTokens(name,"<float>R","COLOR")
+    connectTokenToTokens(name,"<int>R","COLOR")
+    connectTokenToTokens(name,"COLOR","<literal_token>")
+    connectTokenToTokens(name,"<literal_token>",")")    
+
+    #sketchType Tree
+    name = "<tree>"
+    graphs[name] = nx.DiGraph()
+    connectTokenToTokens(name,name,"tree")
+    connectTokenToTokens(name,"tree","(")
+    connectTokenToTokens(name,"(","X")
+    connectTokenToTokens(name,"X","<int>X")
+    connectTokenToTokens(name,"<int>X","Y")
+    connectTokenToTokens(name,"Y","<int>Y")
+    connectTokenToTokens(name,"<int>Y","TRUNK")
+    connectTokenToTokens(name,"TRUNK","<literal_token>")
+    connectTokenToTokens(name,"<literal_token>","LEAF")
+    connectTokenToTokens(name,"LEAF","<literal_token>")
+    connectTokenToTokens(name,"<literal_token>",")")    
+    
+
+    #draw
+
+    name = "<draw>"
+    graphs[name] = nx.DiGraph()
+    
+    connectTokenToTokens(name,name,"draw")
+    connectTokenToTokens(name,"draw","(")
+    connectTokenToTokens(name,"(","<id_token>")
+    connectTokenToTokens(name,"<id_token>","IN")
+    connectTokenToTokens(name,"IN","<id_token>IN")
+    connectTokenToTokens(name,"<id_token>IN","X")
+    connectTokenToTokens(name,"X","<int>X")
+    connectTokenToTokens(name,"<int>X","Y")
+    connectTokenToTokens(name,"Y","<int>Y")
+    connectTokenToTokens(name,"<int>Y",")")
+    connectTokenToTokens(name,")",";")
+
+    #erase
+
+    name = "<erase>"
+    graphs[name] = nx.DiGraph()    
+    connectTokenToTokens(name,name,"erase")
+    connectTokenToTokens(name,"erase","(")
+    connectTokenToTokens(name,"(","<id_token>")
+    connectTokenToTokens(name,"<id_token>",")")
+    connectTokenToTokens(name,")",";")
+
 
 
 try:
