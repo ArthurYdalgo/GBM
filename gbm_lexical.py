@@ -386,18 +386,18 @@ def print_token_source_code(token_source_code,position=True):
             for item in line:
                 if(item.token!="comment" and item.token!="empty_line"):
                     if(position):
-                        print "{0}:'{1}'.({2},{3}) ".format(item.token,item.value,item.line,item.collum),
+                        print ("{0}:'{1}'.({2},{3}) ").format(item.token,item.value,item.line,item.collum),
                     else:
-                        print "{0}:'{1}'".format(item.token,item.value),
+                        print ("{0}:'{1}'").format(item.token,item.value),
             print 
 
 def print_token_code(token_code,position=True):    
 
     for item in token_code:            
         if(position):
-            print "{0}:'{1}'.({2},{3}) ".format(item.token,item.value,item.line,item.collum),
+            print ("{0}:'{1}'.({2},{3}) ").format(item.token,item.value,item.line,item.collum),
         else:
-            print "{0}:'{1}'".format(item.token,item.value),
+            print ("{0}:'{1}'").format(item.token,item.value),
     print
 
 #Procura por chars que nao estao presentes no alfabeto. Flag de correção por padrão é verdadeira, a menos q função
