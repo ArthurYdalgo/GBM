@@ -5,6 +5,7 @@ from Reserved.reserved import *
 import networkx as nx
 import matplotlib.pyplot as plt
 from parseBNF import listOfGraphs,listOfSketches
+import inspect
 
 class Variable():
     def __init__(self,var_type_,token):
@@ -47,9 +48,14 @@ def is_a_number(str):
     except:
         return False
 
-def sError(line,value):
-    print("Syntax error (line {0}): unexpected '{1}'".format(line,value))
+def sError(line,value,errorLine):
+    print("Syntax error (line {0}): unexpected '{1}'...{2}".format(line,value,errorLine))
+    #print("Syntax error (line {0}): unexpected '{1}'".format(line,value))
     sys.exit()
+
+def lineno():
+    """Returns the current line number in our program."""
+    return inspect.currentframe().f_back.f_lineno
 
 def isnt_Terminal(token_type):
     if(token_type[0]=="<" and token_type[len(token_type)-1]==">"):
@@ -97,7 +103,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                 print("Error (line {0}): variable '{1}' was not declared.".format(token_code[cTokenIndex].line,token_code[cTokenIndex].value))
                 sys.exit()        
         
-        if(cState=="(" and cDerivationName=="<while>" and token_code[cTokenIndex-1].value=="while"):
+        if((cState=="(" and cDerivationName=="<while>" and token_code[cTokenIndex-1].value=="while")or (cState=="(" and cDerivationName=="<if>" and token_code[cTokenIndex-1].value=="if")):
             #print("tem while")
             cState = "<operation>"            
             opString=""
@@ -149,7 +155,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                 elif("<"+nToken.token+">" in code_shortcuts):
                     cDerivationName = code_shortcuts["<"+nToken.token+">"]                    
                 else:
-                    sError(nToken.line,nToken.value)
+                    sError(nToken.line,nToken.value,lineno())
                 
                 cTokenIndex = statementsGraphParser(token_code,cTokenIndex+1,cDerivationName)   
                 cToken = token_code[cTokenIndex]                
@@ -163,13 +169,13 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                     nToken = token_code[cTokenIndex+1]  
                 elif(cToken.value == "}"):                                            
                     if(gProbe == 0):
-                        sError(nToken.line,nToken.value)
+                        sError(nToken.line,nToken.value,lineno())
                     else:                                    
                         gProbe-=1
                         return cTokenIndex+1
                 elif(cToken.value=="end"):
                     if(gProbe>0):
-                        sError(nToken.line,nToken.value)
+                        sError(nToken.line,nToken.value,lineno())
                     elif(gProbe==0):
                         pass #codigo terminou    
                 else:                                   
@@ -232,38 +238,46 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                                 break;
                             elif(nToken.value == "}"):                                
                                 if(gProbe == 0):
-                                    sError(nToken.line,nToken.value)
+                                    sError(nToken.line,nToken.value,lineno())
                                 else:                                    
                                     gProbe-=1
                                     return cTokenIndex+2
                             elif(nToken.value=="end"):
                                 if(gProbe>0):
-                                    sError(nToken.line,nToken.value)
+                                    sError(nToken.line,nToken.value,lineno())
                                 elif(gProbe==0):
                                     pass #codigo terminou 
                             else:                                
-                                sError(nToken.line,nToken.value) 
+                                sError(nToken.line,nToken.value,lineno()) 
                         elif(nToken.value == "}"):                                
                             if(gProbe == 0):
-                                sError(nToken.line,nToken.value)
+                                sError(nToken.line,nToken.value,lineno())
                             else:                                    
                                 gProbe-=1
                                 return cTokenIndex+2
                         elif(nToken.value=="end"):
                             if(gProbe>0):
-                                sError(nToken.line,nToken.value)
+                                sError(nToken.line,nToken.value,lineno())
                             elif(gProbe==0):
                                 pass #codigo terminou 
                         else:
-                            sError(nToken.line,nToken.value)  
+                            sError(nToken.line,nToken.value,lineno())  
 
                         #sys.exit()
                 else:
-                    sError(nToken.line,nToken.value)
+                    sError(nToken.line,nToken.value,lineno())
                 
 
 
                 #atribution sketch(later)  
+            
+            if(token_code[cTokenIndex].value=="end"):
+                if(gProbe>0):
+                    print("Syntax Error (line {0}): unexpected '{1}'")
+                elif(gProbe==0):
+                    
+                    return
+                    pass #codigo terminou
             cTokenIndex+=1
             cState=nToken.value
             nToken = token_code[cTokenIndex+1]                
@@ -272,13 +286,13 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
         
             if(gProbe == 0):
                 
-                sError(nToken.line,nToken.value)
+                sError(nToken.line,nToken.value,lineno())
             else:                
                 gProbe-=1
                 return cTokenIndex+2
         elif(nToken.value=="end"):
             if(gProbe>0):
-                sError(nToken.line,nToken.value)
+                sError(nToken.line,nToken.value,lineno())
             elif(gProbe==0):
                 pass #codigo terminou
         elif(cState == ";"):#end of statement                  
@@ -295,7 +309,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                 nToken = token_code[cTokenIndex+1]  
             
             else:                
-                sError(nToken.line,nToken.value)  
+                sError(nToken.line,nToken.value,lineno())  
         
         ##ATRIBUICAO DE OPERAÇOES
         elif(cDerivationName == "<attribution>"):  
@@ -337,17 +351,17 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                                 nToken = token_code[cTokenIndex+1]  
                             elif(nToken.value == "}"):                                
                                 if(gProbe == 0):
-                                    sError(nToken.line,nToken.value)
+                                    sError(nToken.line,nToken.value,lineno())
                                 else:                                    
                                     gProbe-=1
                                     return cTokenIndex+2
                             elif(nToken.value=="end"):
                                 if(gProbe>0):
-                                    sError(nToken.line,nToken.value)
+                                    sError(nToken.line,nToken.value,lineno())
                                 elif(gProbe==0):
                                     pass #codigo terminou
                             else:                                                        
-                                sError(nToken.line,nToken.value)  
+                                sError(nToken.line,nToken.value,lineno())  
                             break
                         else:
                             sError(cToken.line,cToken.value)
@@ -360,7 +374,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                     sys.exit()
        
         else:
-            sError(nToken.line,nToken.value)
+            sError(nToken.line,nToken.value,lineno())
                     
 
 
@@ -455,20 +469,20 @@ def graphParse(token_code):
         elif("<"+nToken.token+">" in code_shortcuts):            
             statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts["<"+nToken.token+">"])
         else:        
-            sError(nToken.line,nToken.value)
+            sError(nToken.line,nToken.value,lineno())
 
     elif(cTokenIndex+1==len(token_code)):
         print("Syntax error: unexpected end of file after line {0}. 'begin' was expected.".format(nToken.line))
     else:
         print("Syntax error (line {0}): unexpected '{1}'. 'begin' was expected.".format(nToken.line,nToken.value))
-    return error
+    return
 
 
 
-# for graph in derivations:
-#      plt.figure(graph)
-#      nx.draw(derivations[graph], with_labels=True,)
-#plt.show()
+for graph in derivations:
+     plt.figure(graph)
+     nx.draw(derivations[graph], with_labels=True,)
+plt.show()
 
 
 
