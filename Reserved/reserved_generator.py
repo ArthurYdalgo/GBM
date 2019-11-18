@@ -28,7 +28,7 @@ for token in action_list:
     pypKeywords[token] = "action_token"
 
 for token in literal_list:
-    pypKeywords[token] = "literal_token"
+    pypKeywords[token] = "boolean_token"
 
 for token in sketch_type_list:
     pypKeywords[token] = "sketchType_token"
