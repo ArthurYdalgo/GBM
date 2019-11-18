@@ -5,7 +5,7 @@ from Alphabet.alphabet import *
 import networkx as nx
 import matplotlib.pyplot as plt
 
-listOfGraphs=["base_code","variable_declaration","attribution","draw","erase","import","export","copy","for"]
+listOfGraphs=["base_code","variable_declaration","attribution","draw","erase","import","export","copy","for","while"]
 
 listOfSketches = ["circle","swarm","tree","square"]
 
@@ -242,21 +242,15 @@ def generateParseGraph():
     name = "<while>"
     graphs[name] = nx.DiGraph()    
     connectTokenToTokens(name,name,"while")
-    connectTokenToTokens(name,"while","(")
-    connectTokenToTokens(name,"(","<conditional>")
-    connectTokenToTokens(name,"(","<identifier>")
-    connectTokenToTokens(name,"(","<literal_token>")
-    connectTokenToTokens(name,"(","<operation>")                  
-    connectTokenToTokens(name,"<conditional>",")")
-    connectTokenToTokens(name,"<identifier>",")")
-    connectTokenToTokens(name,"<literal_token>",")")
+    connectTokenToTokens(name,"while","(")    
+    connectTokenToTokens(name,"(","<operation>")                      
     connectTokenToTokens(name,"<operation>",")")            
     connectTokenToTokens(name,")","{")
     connectTokenToTokens(name,"{","<code_instructions>")
     connectTokenToTokens(name,"<code_instructions>","}")            
                  
      #if (conferir)
-    name = "<else>"
+    name = "<if>"
     graphs[name] = nx.DiGraph()    
     connectTokenToTokens(name,name,"if")
     connectTokenToTokens(name,"if","(")
@@ -265,19 +259,29 @@ def generateParseGraph():
     connectTokenToTokens(name,")","{")
     connectTokenToTokens(name,"{","<code_instructions>")
     connectTokenToTokens(name,"<code_instructions>","}")   
+    connectTokenToTokens(name,"}","<elif>")   
+    connectTokenToTokens(name,"}","<else>")   
                         
-     #else (conferir)
-    name = "<else>"
+     #elif (conferir)
+    name = "<elif>"
     graphs[name] = nx.DiGraph()    
-    connectTokenToTokens(name,name,"else")
-    connectTokenToTokens(name,"if","<if>")
-    connectTokenToTokens(name,"<if>","else")   
-    connectTokenToTokens(name,"else","(")
+    connectTokenToTokens(name,name,"elif")
+    connectTokenToTokens(name,"elif","(")
     connectTokenToTokens(name,"(","<conditional>")          
     connectTokenToTokens(name,"<conditional>",")")        
     connectTokenToTokens(name,")","{")
     connectTokenToTokens(name,"{","<code_instructions>")
-    connectTokenToTokens(name,"<code_instructions>","}")                                              
+    connectTokenToTokens(name,"<code_instructions>","}")   
+    connectTokenToTokens(name,"}","<elif>")   
+    connectTokenToTokens(name,"}","<else>")                                               
+
+    #else
+    name = "<else>"
+    graphs[name] = nx.DiGraph()    
+    connectTokenToTokens(name,name,"else")
+    connectTokenToTokens(name,"else","{")    
+    connectTokenToTokens(name,"{","<code_instructions>")
+    connectTokenToTokens(name,"<code_instructions>","}")          
                          
 try:
     if(sys.argv[1]=="run"):    
