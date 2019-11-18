@@ -5,7 +5,9 @@ from Alphabet.alphabet import *
 import networkx as nx
 import matplotlib.pyplot as plt
 
-listOfGraphs=["base_code","variable_declaration","attribution","draw","erase"]
+listOfGraphs=["base_code","variable_declaration","attribution","draw","erase","import","export","copy"]
+
+listOfSketches = ["circle","swarm","tree","square"]
 
 graphs = {}
 
@@ -14,6 +16,8 @@ def exportGraph():
     global graphs
     for graph in graphs:          
         nx.write_gml(graphs[graph], "parseGraphs/{0}.gml".format(unTokenName(graph)))
+    
+    
 
 def unTokenName(name):
     return name[1:len(name)-1]
@@ -26,6 +30,7 @@ def connectTokenToTokens(Graph,originToken,endToken_):
     elif(type(endToken_) is list ):
         for token in endToken_:
             graphs[Graph].add_edge(originToken,token)
+        
     
 def generateParseGraph():
     #<base_code>
@@ -62,7 +67,7 @@ def generateParseGraph():
     connectTokenToTokens(name,"<id_token>",",")
     connectTokenToTokens(name,"<id_token>",";")    
     connectTokenToTokens(name,",","<id_token>")   
-        
+
     #atribuição
     name = "<attribution>"
     graphs[name] = nx.DiGraph()
@@ -75,8 +80,8 @@ def generateParseGraph():
     connectTokenToTokens(name,"<operation>",";")    
     connectTokenToTokens(name,"=","<literal_token>")
     connectTokenToTokens(name,"<literal_token>",";")
-    connectTokenToTokens(name,"=","<sketch_type>")
-    connectTokenToTokens(name,"<sketch_type>",";")
+    connectTokenToTokens(name,"=","<sketchType_token>")
+    connectTokenToTokens(name,"<sketchType_token>",";")
 
     #sketchType Circle
     name = "<circle>"
@@ -148,9 +153,43 @@ def generateParseGraph():
     connectTokenToTokens(name,"LEAF","<literal_token>")
     connectTokenToTokens(name,"<literal_token>",")")    
     
+    #import
+    name = "<import>"
+    graphs[name] = nx.DiGraph()
+    
+    connectTokenToTokens(name,name,"import")
+    connectTokenToTokens(name,"import","(")
+    connectTokenToTokens(name,"(","<literal_token>")
+    connectTokenToTokens(name,"<literal_token>","IN")
+    connectTokenToTokens(name,"IN","<id_token>")
+    connectTokenToTokens(name,"<id_token>",")")
+    connectTokenToTokens(name,")",";")
+
+    #export
+    name = "<export>"
+    graphs[name] = nx.DiGraph()
+    
+    connectTokenToTokens(name,name,"export")
+    connectTokenToTokens(name,"export","(")
+    connectTokenToTokens(name,"(","<id_token>")
+    connectTokenToTokens(name,"<id_token>","TO")
+    connectTokenToTokens(name,"TO","<literal_token>")
+    connectTokenToTokens(name,"<literal_token>",")")
+    connectTokenToTokens(name,")",";")
+
+    #copy
+    name = "<copy>"
+    graphs[name] = nx.DiGraph()
+    
+    connectTokenToTokens(name,name,"copy")
+    connectTokenToTokens(name,"copy","(")
+    connectTokenToTokens(name,"(","<id_token>")
+    connectTokenToTokens(name,"<id_token>","TO")
+    connectTokenToTokens(name,"TO","<id_token>TO")
+    connectTokenToTokens(name,"<id_token>TO",")")
+    connectTokenToTokens(name,")",";")
 
     #draw
-
     name = "<draw>"
     graphs[name] = nx.DiGraph()
     
@@ -167,7 +206,6 @@ def generateParseGraph():
     connectTokenToTokens(name,")",";")
 
     #erase
-
     name = "<erase>"
     graphs[name] = nx.DiGraph()    
     connectTokenToTokens(name,name,"erase")
@@ -175,6 +213,13 @@ def generateParseGraph():
     connectTokenToTokens(name,"(","<id_token>")
     connectTokenToTokens(name,"<id_token>",")")
     connectTokenToTokens(name,")",";")
+
+
+    #for
+    
+
+
+
 
 
 
