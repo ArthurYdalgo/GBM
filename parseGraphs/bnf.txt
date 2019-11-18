@@ -55,13 +55,14 @@ return::= return <identifier>| return <function> | return <operation> | return <
 >Erase Action (OK) (DONE)
 <erase_action> ::= "erase","(",<id_token>,")"
 
->Import Action (OK)
-<import_action> ::= "import","(",<literal_token>,"in",<id_token>,")",";";
+>Import Action (OK) (DONE)
+<import_action> ::= "import","(",<literal_token>,"IN",<id_token>,")",";";
 
->Export Action (OK)
-<import_action> ::= "export","(",<id_token>,"to",<literal_token>,")",";";
+>Export Action (OK) (DONE)
+<import_action> ::= "export","(",<id_token>,"TO",<literal_token>,")",";";
 
-
+>Copy Action (OK)
+<copy_action> ::= "copy" , "(" , <id_token> , "TO" , <id_token> , ")" , ";" ;
 
 > Operação (OK)
 <operation>::= <identifier><mathElements_list><identifier> | <function><mathElements_list><identifier> | <identifier><mathElements_list><mathElements_list>
