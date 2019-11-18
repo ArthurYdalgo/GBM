@@ -3,7 +3,7 @@ file_name = "gbm_reserved.json"
 
 conditional_list = ['if','else','elif']
 
-loop_list = ['for','while','do','break']
+loop_list = ['for','while','break']
 
 action_list = ['draw','erase','export','import']
 
