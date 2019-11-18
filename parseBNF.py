@@ -5,7 +5,7 @@ from Alphabet.alphabet import *
 import networkx as nx
 import matplotlib.pyplot as plt
 
-listOfGraphs=["base_code","variable_declaration","attribution","draw","erase","import","export","copy"]
+listOfGraphs=["base_code","variable_declaration","attribution","draw","erase","import","export","copy","for"]
 
 listOfSketches = ["circle","swarm","tree","square"]
 
@@ -88,10 +88,10 @@ def generateParseGraph():
     graphs[name] = nx.DiGraph()
     connectTokenToTokens(name,name,"circle")
     connectTokenToTokens(name,"circle","(")
-    connectTokenToTokens(name,"(","RADIUS")
-    connectTokenToTokens(name,"RADIUS","<int>")
-    connectTokenToTokens(name,"<int>","COLOR")
-    connectTokenToTokens(name,"COLOR","<literal_token>")
+    connectTokenToTokens(name,"(","radius")
+    connectTokenToTokens(name,"radius","<int>")
+    connectTokenToTokens(name,"<int>","color")
+    connectTokenToTokens(name,"color","<literal_token>")
     connectTokenToTokens(name,"<literal_token>",")")    
     
     #sketchType Square
@@ -103,8 +103,8 @@ def generateParseGraph():
     connectTokenToTokens(name,"X","<int>X")
     connectTokenToTokens(name,"<int>X","Y")
     connectTokenToTokens(name,"Y","<int>Y")
-    connectTokenToTokens(name,"<int>Y","COLOR")
-    connectTokenToTokens(name,"COLOR","<literal_token>")
+    connectTokenToTokens(name,"<int>Y","color")
+    connectTokenToTokens(name,"color","<literal_token>")
     connectTokenToTokens(name,"<literal_token>",")")    
 
     #sketchType Web
@@ -116,8 +116,8 @@ def generateParseGraph():
     connectTokenToTokens(name,"X","<int>X")
     connectTokenToTokens(name,"<int>X","Y")
     connectTokenToTokens(name,"Y","<int>Y")
-    connectTokenToTokens(name,"<int>Y","COLOR")
-    connectTokenToTokens(name,"COLOR","<literal_token>")
+    connectTokenToTokens(name,"<int>Y","color")
+    connectTokenToTokens(name,"color","<literal_token>")
     connectTokenToTokens(name,"<literal_token>",")")    
     
 
@@ -130,12 +130,12 @@ def generateParseGraph():
     connectTokenToTokens(name,"X","<int>X")
     connectTokenToTokens(name,"<int>X","Y")
     connectTokenToTokens(name,"Y","<int>Y")
-    connectTokenToTokens(name,"<int>Y","RATE")
-    connectTokenToTokens(name,"RATE","<int>RATE")
-    connectTokenToTokens(name,"RATE","<float>RATE")
-    connectTokenToTokens(name,"<float>RATE","COLOR")
-    connectTokenToTokens(name,"<int>RATE","COLOR")
-    connectTokenToTokens(name,"COLOR","<literal_token>")
+    connectTokenToTokens(name,"<int>Y","rate")
+    connectTokenToTokens(name,"rate","<int>rate")
+    connectTokenToTokens(name,"rate","<float>rate")
+    connectTokenToTokens(name,"<float>rate","color")
+    connectTokenToTokens(name,"<int>rate","color")
+    connectTokenToTokens(name,"color","<literal_token>")
     connectTokenToTokens(name,"<literal_token>",")")    
 
     #sketchType Tree
@@ -147,11 +147,11 @@ def generateParseGraph():
     connectTokenToTokens(name,"X","<int>X")
     connectTokenToTokens(name,"<int>X","Y")
     connectTokenToTokens(name,"Y","<int>Y")
-    connectTokenToTokens(name,"<int>Y","TRUNK")
-    connectTokenToTokens(name,"TRUNK","<literal_token>TRUNK")
-    connectTokenToTokens(name,"<literal_token>TRUNK","LEAF")
-    connectTokenToTokens(name,"LEAF","<literal_token>LEAF")
-    connectTokenToTokens(name,"<literal_token>LEAF",")")    
+    connectTokenToTokens(name,"<int>Y","trunk")
+    connectTokenToTokens(name,"trunk","<literal_token>trunk")
+    connectTokenToTokens(name,"<literal_token>trunk","leaf")
+    connectTokenToTokens(name,"leaf","<literal_token>leaf")
+    connectTokenToTokens(name,"<literal_token>leaf",")")    
     
     #import
     name = "<import>"
@@ -160,8 +160,8 @@ def generateParseGraph():
     connectTokenToTokens(name,name,"import")
     connectTokenToTokens(name,"import","(")
     connectTokenToTokens(name,"(","<literal_token>")
-    connectTokenToTokens(name,"<literal_token>","IN")
-    connectTokenToTokens(name,"IN","<id_token>")
+    connectTokenToTokens(name,"<literal_token>","in")
+    connectTokenToTokens(name,"in","<id_token>")
     connectTokenToTokens(name,"<id_token>",")")
     connectTokenToTokens(name,")",";")
 
@@ -172,8 +172,8 @@ def generateParseGraph():
     connectTokenToTokens(name,name,"export")
     connectTokenToTokens(name,"export","(")
     connectTokenToTokens(name,"(","<id_token>")
-    connectTokenToTokens(name,"<id_token>","TO")
-    connectTokenToTokens(name,"TO","<literal_token>")
+    connectTokenToTokens(name,"<id_token>","to")
+    connectTokenToTokens(name,"to","<literal_token>")
     connectTokenToTokens(name,"<literal_token>",")")
     connectTokenToTokens(name,")",";")
 
@@ -184,9 +184,9 @@ def generateParseGraph():
     connectTokenToTokens(name,name,"copy")
     connectTokenToTokens(name,"copy","(")
     connectTokenToTokens(name,"(","<id_token>")
-    connectTokenToTokens(name,"<id_token>","TO")
-    connectTokenToTokens(name,"TO","<id_token>TO")
-    connectTokenToTokens(name,"<id_token>TO",")")
+    connectTokenToTokens(name,"<id_token>","to")
+    connectTokenToTokens(name,"to","<id_token>to")
+    connectTokenToTokens(name,"<id_token>to",")")
     connectTokenToTokens(name,")",";")
 
     #draw
@@ -196,9 +196,9 @@ def generateParseGraph():
     connectTokenToTokens(name,name,"draw")
     connectTokenToTokens(name,"draw","(")
     connectTokenToTokens(name,"(","<id_token>")
-    connectTokenToTokens(name,"<id_token>","IN")
-    connectTokenToTokens(name,"IN","<id_token>IN")
-    connectTokenToTokens(name,"<id_token>IN","X")
+    connectTokenToTokens(name,"<id_token>","in")
+    connectTokenToTokens(name,"in","<id_token>in")
+    connectTokenToTokens(name,"<id_token>in","X")
     connectTokenToTokens(name,"X","<int>X")
     connectTokenToTokens(name,"<int>X","Y")
     connectTokenToTokens(name,"Y","<int>Y")
@@ -213,28 +213,27 @@ def generateParseGraph():
     connectTokenToTokens(name,"(","<id_token>")
     connectTokenToTokens(name,"<id_token>",")")
     connectTokenToTokens(name,")",";")
-
-
-
-    #for
+    
 
     #for (conferir)
     name = "<for>"
     graphs[name] = nx.DiGraph()    
     connectTokenToTokens(name,name,"for")
-    connectTokenToTokens(name,"for","<id_token>"")
-    connectTokenToTokens(name,"<id_token>","<int>")
-    connectTokenToTokens(name,"<id_token>","<float>")
-    connectTokenToTokens(name,"<int>","to")
-    connectTokenToTokens(name,"<float>","to")
-    connectTokenToTokens(name,"to","<int>")
-    connectTokenToTokens(name,"to","<float>")
-    connectTokenToTokens(name,"<int>","step")
-    connectTokenToTokens(name,"<float>","step")                         
-    connectTokenToTokens(name,"step","<int>")
-    connectTokenToTokens(name,"step","<float>")   
-    connectTokenToTokens(name,"<int>","{")
-    connectTokenToTokens(name,"<float>","{")               
+    connectTokenToTokens(name,"for","<id_token>")
+    connectTokenToTokens(name,"<id_token>","from")
+
+    connectTokenToTokens(name,"from","<int>from")
+    connectTokenToTokens(name,"from","<float>from")
+    connectTokenToTokens(name,"<int>from","to")
+    connectTokenToTokens(name,"<float>from","to")
+    connectTokenToTokens(name,"to","<int>to")
+    connectTokenToTokens(name,"to","<float>to")
+    connectTokenToTokens(name,"<int>to","step")
+    connectTokenToTokens(name,"<float>to","step")                         
+    connectTokenToTokens(name,"step","<int>step")
+    connectTokenToTokens(name,"step","<float>step")   
+    connectTokenToTokens(name,"<int>step","{")
+    connectTokenToTokens(name,"<float>step","{")               
     connectTokenToTokens(name,"{","<code_instructions>")
     connectTokenToTokens(name,"<code_instructions>","}")
 
@@ -243,7 +242,7 @@ def generateParseGraph():
     name = "<while>"
     graphs[name] = nx.DiGraph()    
     connectTokenToTokens(name,name,"while")
-    connectTokenToTokens(name,"while","("")
+    connectTokenToTokens(name,"while","(")
     connectTokenToTokens(name,"(","<conditional>")
     connectTokenToTokens(name,"(","<identifier>")
     connectTokenToTokens(name,"(","<literal_token>")
@@ -260,7 +259,7 @@ def generateParseGraph():
     name = "<else>"
     graphs[name] = nx.DiGraph()    
     connectTokenToTokens(name,name,"if")
-    connectTokenToTokens(name,"if","("")
+    connectTokenToTokens(name,"if","(")
     connectTokenToTokens(name,"(","<conditional>")          
     connectTokenToTokens(name,"<conditional>",")")        
     connectTokenToTokens(name,")","{")
@@ -271,9 +270,9 @@ def generateParseGraph():
     name = "<else>"
     graphs[name] = nx.DiGraph()    
     connectTokenToTokens(name,name,"else")
-    connectTokenToTokens(name,"if","<if>"")
+    connectTokenToTokens(name,"if","<if>")
     connectTokenToTokens(name,"<if>","else")   
-    connectTokenToTokens(name,"else","("")
+    connectTokenToTokens(name,"else","(")
     connectTokenToTokens(name,"(","<conditional>")          
     connectTokenToTokens(name,"<conditional>",")")        
     connectTokenToTokens(name,")","{")
