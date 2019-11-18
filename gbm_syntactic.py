@@ -95,11 +95,50 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
         if(token_code[cTokenIndex].token == "id_token"):            
             if(not(token_code[cTokenIndex].value in code_variables)):
                 print("Error (line {0}): variable '{1}' was not declared.".format(token_code[cTokenIndex].line,token_code[cTokenIndex].value))
-                sys.exit()
+                sys.exit()        
+        
+        if(cState=="(" and cDerivationName=="<while>" and token_code[cTokenIndex-1].value=="while"):
+            #print("tem while")
+            cState = "<operation>"            
+            opString=""
+            while(True):                
+                if(cTokenIndex<len(token_code)-1):
+                    cToken = nToken
+                    cTokenIndex+=1
+                    nToken = token_code[cTokenIndex+1]
+                    if(cToken.value==")" and nToken.value=="{"):
+                        cState = ")"
+                        break
+                    if(cToken.token == "math_operator" or cToken.value == "(" or cToken.value == ")" or cToken.token == "id_token" or cToken.token == "boolean_token" or cToken.token=="logic_token" or is_a_number(cToken.value)):
 
-        #print(cState)
-        if(nToken.value in derivations[cDerivationName][cState] or "<"+nToken.token+">" in derivations[cDerivationName][cState]):#walk    
-              
+                        if(cToken.value == "^"):
+                            opString+="**"
+                        elif(cToken.token == "id_token"):
+                            if(cToken.value in code_variables):
+                                opString+="code_variables['{0}']".format(cToken.value)
+                            else:
+                                print("Error (line {0}): variable '{1}' was not declared.".format(cToken.line,cToken.value))
+                                sys.exit()
+                        else:
+                            opString+=cToken.value+" "
+                else:
+                    print("Syntax error: unexpected end of file after line {0}.".format(token_code[cTokenIndex].line))
+            if(len(opString)==0):
+                print("Syntax error (line {0}): logic operation required.".format(cToken.line))
+                sys.exit()
+            else:
+                try:
+                    eval(opString)                    
+                except:
+                    print("Syntax error (line {0}): operation '{1}' is invalid. Check for parenthesis, variables, numbers and literals.".format(cToken.line,opString))    
+                    sys.exit()
+            
+
+        if(nToken.value in derivations[cDerivationName][cState] or "<"+nToken.token+">" in derivations[cDerivationName][cState]):#walk  
+
+            #  
+            
+
             if(nToken.value == "{"):                        
                 gProbe+=1
                 cTokenIndex+=1
@@ -272,7 +311,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                         cToken = nToken
                         cTokenIndex+=1
                         nToken = token_code[cTokenIndex+1]
-                        if(cToken.token == "math_operator" or cToken.value == "(" or cToken.value == ")" or cToken.token == "id_token" or cToken.token == "boolean_token" or is_a_number(cToken.value)):
+                        if(cToken.token == "math_operator" or cToken.value == "(" or cToken.value == ")" or cToken.token == "id_token" or cToken.token == "boolean_token" or cToken.token =="logic_token" or is_a_number(cToken.value)):
 
                             if(cToken.value == "^"):
                                 opString+="**"
@@ -283,7 +322,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                                     print("Error (line {0}): variable '{1}' was not declared.".format(cToken.line,cToken.value))
                                     sys.exit()
                             else:
-                                opString+=cToken.value
+                                opString+=cToken.value+" "
                         elif(cToken.value==";"):                                                                               
                             if(nToken.value in code_shortcuts):
                                 cDerivationName = code_shortcuts[nToken.value]
@@ -320,10 +359,6 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                     print("Syntax error (line {0}): operation '{1}' is invalid. Check for parenthesis, variables, numbers and literals.".format(cToken.line,opString))    
                     sys.exit()
        
-
-        
-        
-        
         else:
             sError(nToken.line,nToken.value)
                     
@@ -430,9 +465,9 @@ def graphParse(token_code):
 
 
 
-for graph in derivations:
-     plt.figure(graph)
-     nx.draw(derivations[graph], with_labels=True, font_weight='bold')
+# for graph in derivations:
+#      plt.figure(graph)
+#      nx.draw(derivations[graph], with_labels=True,)
 #plt.show()
 
 
