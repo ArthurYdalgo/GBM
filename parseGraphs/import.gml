@@ -22,7 +22,7 @@ graph [
   ]
   node [
     id 5
-    label "IN"
+    label "in"
   ]
   node [
     id 6

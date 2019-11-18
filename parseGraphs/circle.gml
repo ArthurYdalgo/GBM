@@ -10,7 +10,7 @@ graph [
   ]
   node [
     id 2
-    label "COLOR"
+    label "color"
   ]
   node [
     id 3
@@ -26,7 +26,7 @@ graph [
   ]
   node [
     id 6
-    label "RADIUS"
+    label "radius"
   ]
   node [
     id 7

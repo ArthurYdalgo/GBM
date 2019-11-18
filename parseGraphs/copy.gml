@@ -18,11 +18,11 @@ graph [
   ]
   node [
     id 4
-    label "<id_token>TO"
+    label "<id_token>to"
   ]
   node [
     id 5
-    label "TO"
+    label "to"
   ]
   node [
     id 6

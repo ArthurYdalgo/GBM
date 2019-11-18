@@ -22,7 +22,7 @@ graph [
   ]
   node [
     id 5
-    label "TO"
+    label "to"
   ]
   node [
     id 6

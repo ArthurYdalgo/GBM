@@ -10,7 +10,7 @@ graph [
   ]
   node [
     id 2
-    label "COLOR"
+    label "color"
   ]
   node [
     id 3
