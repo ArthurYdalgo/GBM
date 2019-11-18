@@ -1,5 +1,5 @@
 var
-int a;
+int a,b,d;
 int bc,fgerg;
 int wfef;
 int    bf;
@@ -12,34 +12,48 @@ begin
 a=7+10;
 #a=; 
 a=10;
-nome = "oi";
 bc = 9^2;
-bf  =10;
-c = 33.4;
-   fundo = square(X 1920 Y 1080 color "white")    ;
-   c=34;
-  
+
   for a from 0 to 10 step 1{
+   
+       for b from 0 to 10 step 1{
+   
+    a = 10;
+    nome = "oinii";
+ 
+   
+  }
+    a = 10;
+    nome = "oinii";
+  
+      for b from 0 to 10 step 1{
+   
+    a = 10;
+    nome = "oinii";
+ 
+   
+  }
+    bf = True;
+    nome = "oinii";
+    bf = True;
     
-    a = 10;
-    nome = "oinii";
-    a = 10;
-    nome = "oinii";
-    a = 10;
-    nome = "oinii";
-    a = 10;
-    bf = True;
-    nome = "oinii";
-    bf = True;
-    a = 10;
     fundo = square(X 1920 Y 1080 color "white")    ;
-    a = 10;
+    
     bf = True;
     nome = "oinii";
+    for b from 0 to 10 step 1{
+   
+    a = 10;
+    nome = "oinii";
+ 
+   
+  }
+    
   }
   
   if(a<bc){
     c=3.5;
+    
         }
 
 if(bf<= bc)
