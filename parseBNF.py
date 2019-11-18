@@ -215,13 +215,25 @@ def generateParseGraph():
     connectTokenToTokens(name,")",";")
 
 
-    #for
-    
-
-
-
-
-
+    #for (conferir)
+    name = "<for>"
+    graphs[name] = nx.DiGraph()    
+    connectTokenToTokens(name,name,"for")
+    connectTokenToTokens(name,"for","<id_token>"")
+    connectTokenToTokens(name,"<id_token>","<int>")
+    connectTokenToTokens(name,"<id_token>","<float>")
+    connectTokenToTokens(name,"<int>","to")
+    connectTokenToTokens(name,"<float>","to")
+    connectTokenToTokens(name,"to","<int>")
+    connectTokenToTokens(name,"to","<float>")
+    connectTokenToTokens(name,"<int>","step")
+    connectTokenToTokens(name,"<float>","step")                         
+    connectTokenToTokens(name,"step","<int>")
+    connectTokenToTokens(name,"step","<float>")   
+    connectTokenToTokens(name,"<int>","{")
+    connectTokenToTokens(name,"<float>","{")               
+    connectTokenToTokens(name,"{","<code_instructions>")
+    connectTokenToTokens(name,"<code_instructions>","}")
 
 try:
     if(sys.argv[1]=="run"):    
