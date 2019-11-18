@@ -109,13 +109,13 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                     if(cToken.value==")" and nToken.value=="{"):
                         cState = ")"
                         break
-                    if(cToken.token == "math_operator" or cToken.value == "(" or cToken.value == ")" or cToken.token == "id_token" or cToken.token == "boolean_token" or cToken.token=="logic_token" or is_a_number(cToken.value)):
+                    if(cToken.token == "math_operator" or cToken.value == "(" or cToken.value == ")" or cToken.token == "id_token" or cToken.token == "boolean_token" or cToken.token=="logic_token" or is_a_number(cToken.value) or cToken.token=="logic_operator"):
 
                         if(cToken.value == "^"):
                             opString+="**"
                         elif(cToken.token == "id_token"):
                             if(cToken.value in code_variables):
-                                opString+="code_variables['{0}']".format(cToken.value)
+                                opString+='code_variables["'+cToken.value+'"] '
                             else:
                                 print("Error (line {0}): variable '{1}' was not declared.".format(cToken.line,cToken.value))
                                 sys.exit()
@@ -128,7 +128,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                 sys.exit()
             else:
                 try:
-                    eval(opString)                    
+                    eval("'"+opString+"'")              
                 except:
                     print("Syntax error (line {0}): operation '{1}' is invalid. Check for parenthesis, variables, numbers and literals.".format(cToken.line,opString))    
                     sys.exit()
@@ -311,13 +311,13 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                         cToken = nToken
                         cTokenIndex+=1
                         nToken = token_code[cTokenIndex+1]
-                        if(cToken.token == "math_operator" or cToken.value == "(" or cToken.value == ")" or cToken.token == "id_token" or cToken.token == "boolean_token" or cToken.token =="logic_token" or is_a_number(cToken.value)):
+                        if(cToken.token == "math_operator" or cToken.value == "(" or cToken.value == ")" or cToken.token == "id_token" or cToken.token == "boolean_token" or cToken.token=="logic_token" or is_a_number(cToken.value) or cToken.token=="logic_operator"):
 
                             if(cToken.value == "^"):
                                 opString+="**"
                             elif(cToken.token == "id_token"):
                                 if(cToken.value in code_variables):
-                                    opString+="code_variables['{0}']".format(cToken.value)
+                                    opString+='code_variables["'+cToken.value+'"] '
                                 else:
                                     print("Error (line {0}): variable '{1}' was not declared.".format(cToken.line,cToken.value))
                                     sys.exit()
@@ -354,7 +354,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                     else:
                         print("Syntax error: unexpected end of file after line {0}.".format(token_code[cTokenIndex].line))
                 try:
-                    eval(opString)                    
+                    eval("'"+opString+"'")       
                 except:
                     print("Syntax error (line {0}): operation '{1}' is invalid. Check for parenthesis, variables, numbers and literals.".format(cToken.line,opString))    
                     sys.exit()
