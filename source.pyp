@@ -50,6 +50,53 @@ bc = 9^2;
   }
     
   }
+
+  while(True and True){
+    while(True and True){
+    
+    nome = "oinii";
+    bf = True;
+    
+    fundo = square(X 1920 Y 1080 color "white")    ;
+    
+    bf = True;
+    nome = "oinii";
+    a = 10;
+
+  }
+    nome = "oinii";
+    bf = True;
+    while(True and True){
+    
+    nome = "oinii";
+    bf = True;
+    
+    fundo = square(X 1920 Y 1080 color "white")    ;
+    
+    bf = True;
+    nome = "oinii";
+    a = 10;
+
+  }
+    fundo = square(X 1920 Y 1080 color "white")    ;
+    
+    bf = True;
+    nome = "oinii";
+    a = 10;
+    while(True and True){
+    
+    nome = "oinii";
+    bf = True;
+    
+    fundo = square(X 1920 Y 1080 color "white")    ;
+    
+    bf = True;
+    nome = "oinii";
+    a = 10;
+
+  }
+
+  }
   
   if(a<bc){
     c=3.5;
