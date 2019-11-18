@@ -235,6 +235,48 @@ def generateParseGraph():
     connectTokenToTokens(name,"{","<code_instructions>")
     connectTokenToTokens(name,"<code_instructions>","}")
 
+                         
+     #while (conferir)
+    name = "<while>"
+    graphs[name] = nx.DiGraph()    
+    connectTokenToTokens(name,name,"while")
+    connectTokenToTokens(name,"while","("")
+    connectTokenToTokens(name,"(","<conditional>")
+    connectTokenToTokens(name,"(","<identifier>")
+    connectTokenToTokens(name,"(","<literal_token>")
+    connectTokenToTokens(name,"(","<operation>")                  
+    connectTokenToTokens(name,"<conditional>",")")
+    connectTokenToTokens(name,"<identifier>",")")
+    connectTokenToTokens(name,"<literal_token>",")")
+    connectTokenToTokens(name,"<operation>",")")            
+    connectTokenToTokens(name,")","{")
+    connectTokenToTokens(name,"{","<code_instructions>")
+    connectTokenToTokens(name,"<code_instructions>","}")            
+                 
+     #if (conferir)
+    name = "<else>"
+    graphs[name] = nx.DiGraph()    
+    connectTokenToTokens(name,name,"if")
+    connectTokenToTokens(name,"if","("")
+    connectTokenToTokens(name,"(","<conditional>")          
+    connectTokenToTokens(name,"<conditional>",")")        
+    connectTokenToTokens(name,")","{")
+    connectTokenToTokens(name,"{","<code_instructions>")
+    connectTokenToTokens(name,"<code_instructions>","}")   
+                        
+     #else (conferir)
+    name = "<else>"
+    graphs[name] = nx.DiGraph()    
+    connectTokenToTokens(name,name,"else")
+    connectTokenToTokens(name,"if","<if>"")
+    connectTokenToTokens(name,"<if>","else")   
+    connectTokenToTokens(name,"else","("")
+    connectTokenToTokens(name,"(","<conditional>")          
+    connectTokenToTokens(name,"<conditional>",")")        
+    connectTokenToTokens(name,")","{")
+    connectTokenToTokens(name,"{","<code_instructions>")
+    connectTokenToTokens(name,"<code_instructions>","}")                                              
+                         
 try:
     if(sys.argv[1]=="run"):    
         generateParseGraph()        
