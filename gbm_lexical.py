@@ -253,7 +253,7 @@ def toToken(source_code):
                         new_line.append(token_obj)
                     elif(is_a_number(item)):
                         if(type(eval(item)) is int):
-                            token_obj = pypToken("integer",item,line_count,collum_count)                        
+                            token_obj = pypToken("int",item,line_count,collum_count)                        
                             new_line.append(token_obj)
                         else:
                             token_obj = pypToken("float",item,line_count,collum_count)                        
