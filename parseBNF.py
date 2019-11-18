@@ -215,15 +215,9 @@ def generateParseGraph():
     connectTokenToTokens(name,")",";")
 
 
-<<<<<<< HEAD
+
     #for
 
-
-
-
-
-
-=======
     #for (conferir)
     name = "<for>"
     graphs[name] = nx.DiGraph()    
@@ -243,7 +237,6 @@ def generateParseGraph():
     connectTokenToTokens(name,"<float>","{")               
     connectTokenToTokens(name,"{","<code_instructions>")
     connectTokenToTokens(name,"<code_instructions>","}")
->>>>>>> d24e30160830e62eaf4e32b15398a1512bc1db30
 
                          
      #while (conferir)
