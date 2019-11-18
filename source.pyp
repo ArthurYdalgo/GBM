@@ -9,12 +9,15 @@ canvas fundo;
 string nome;
 string a_;
 begin
-a=7;
+a=7+10;
+#joao = 283;
+a=10;
 nome = "oi";
 bc = 9;
 bf  =10;
 c = 33.4;
-   fundo = square(1920,1080,"white")    ;
+   fundo = square(X 1920 Y 1080 COLOR "white")    ;
+   c=34;
   if(a<bc){
     c=3.5;
         }
