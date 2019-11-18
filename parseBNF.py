@@ -5,7 +5,7 @@ from Alphabet.alphabet import *
 import networkx as nx
 import matplotlib.pyplot as plt
 
-listOfGraphs=["base_code","variable_declaration","attribution","draw","erase","import","export","copy","for","while"]
+listOfGraphs=["base_code","variable_declaration","attribution","draw","erase","import","export","copy","for","while","break","if","else"]
 
 listOfSketches = ["circle","swarm","tree","square"]
 
@@ -247,7 +247,13 @@ def generateParseGraph():
     connectTokenToTokens(name,"<operation>",")")            
     connectTokenToTokens(name,")","{")
     connectTokenToTokens(name,"{","<code_instructions>")
-    connectTokenToTokens(name,"<code_instructions>","}")            
+    connectTokenToTokens(name,"<code_instructions>","}")    
+
+    #break
+    name = "<break>"
+    graphs[name] = nx.DiGraph()    
+    connectTokenToTokens(name,name,"break")
+    connectTokenToTokens(name,"break",";")        
                  
      #if (conferir)
     name = "<if>"
