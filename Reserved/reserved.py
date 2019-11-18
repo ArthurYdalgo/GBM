@@ -11,7 +11,9 @@ data_type_list = ['int','string','float','bool']
 
 sketch_type_list = ['circle','square','swarm','web','tree']
 
-sketch_properties = ['X','Y','RADIUS','TRUNK','LEAF','RATE','COLOR','IN','TO']
+sketch_properties = ['X','Y','radius','trunk','leaf','rate','color']
+
+misc = ['in', 'to','from','step']
 
 logic_list = ['and','or']
 

@@ -33,6 +33,9 @@ for token in literal_list:
 for token in sketch_type_list:
     pypKeywords[token] = "sketchType_token"
 
+for token in misc:
+    pypKeywords[token] = "misc_token"
+
 try:
     with open(file_name, 'w') as f:
         json.dump(pypKeywords, f)
