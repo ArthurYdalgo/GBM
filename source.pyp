@@ -10,40 +10,30 @@ string nome;
 string a_;
 begin
 a=3;
-b=7;
+b=(7+b);
 while (a<b){
 		
 		a = b+1;
 }
-
-
 a = 10+1;
 
+else{
+d=10;
+}
 
-bc = 9^2+b;
-a=7+10;
-#a=; 
-a=10;
-c=9.3;
   for a from 0 to 10 step 1{
 	
-       for a from 0 to 10 step 1 {
-	
-	
-    a = 10;
-	
-    a = "oinii";
-
-  }
-
-    a = 10 ;
-    nome = "oinii";
-
-  
-  
+		b = 10+1;
   
   }
 if(a<b){
-a=10;
+c=10;
+
+}  else if (a<b) {
+d=10;
 }
+else if(a==b){
+d=10;
+
+
 end
