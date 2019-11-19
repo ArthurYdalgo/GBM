@@ -264,30 +264,35 @@ def generateParseGraph():
     connectTokenToTokens(name,"<conditional>",")")        
     connectTokenToTokens(name,")","{")
     connectTokenToTokens(name,"{","<code_instructions>")
-    connectTokenToTokens(name,"<code_instructions>","}")   
-    connectTokenToTokens(name,"}","<elif>")   
+    connectTokenToTokens(name,"<code_instructions>","}")          
     connectTokenToTokens(name,"}","<else>")   
                         
      #elif (conferir)
-    name = "<elif>"
-    graphs[name] = nx.DiGraph()    
-    connectTokenToTokens(name,name,"elif")
-    connectTokenToTokens(name,"elif","(")
-    connectTokenToTokens(name,"(","<conditional>")          
-    connectTokenToTokens(name,"<conditional>",")")        
-    connectTokenToTokens(name,")","{")
-    connectTokenToTokens(name,"{","<code_instructions>")
-    connectTokenToTokens(name,"<code_instructions>","}")   
-    connectTokenToTokens(name,"}","<elif>")   
-    connectTokenToTokens(name,"}","<else>")                                               
+    # name = "<elif>"
+    # graphs[name] = nx.DiGraph()    
+    # connectTokenToTokens(name,name,"elif")
+    # connectTokenToTokens(name,"elif","(")
+    # connectTokenToTokens(name,"(","<conditional>")          
+    # connectTokenToTokens(name,"<conditional>",")")        
+    # connectTokenToTokens(name,")","{")
+    # connectTokenToTokens(name,"{","<code_instructions>")
+    # connectTokenToTokens(name,"<code_instructions>","}")   
+    # connectTokenToTokens(name,"}","<elif>")   
+    # connectTokenToTokens(name,"}","<else>")                                               
 
     #else
     name = "<else>"
     graphs[name] = nx.DiGraph()    
     connectTokenToTokens(name,name,"else")
+    connectTokenToTokens(name,"else","if")
+    connectTokenToTokens(name,"if","(")
+    connectTokenToTokens(name,"(","<conditional>")          
+    connectTokenToTokens(name,"<conditional>",")")        
+    connectTokenToTokens(name,")","{")
     connectTokenToTokens(name,"else","{")    
     connectTokenToTokens(name,"{","<code_instructions>")
-    connectTokenToTokens(name,"<code_instructions>","}")          
+    connectTokenToTokens(name,"<code_instructions>","}")    
+    
                          
 try:
     if(sys.argv[1]=="run"):    
