@@ -12,6 +12,12 @@ class Variable():
         self.type = var_type_
         self.name = token.value
         self.line = token.line
+        if(var_type_=="float" or var_type_=="int"):
+            self.value = 0
+        elif(var_type_=="string"):
+            self.value=""
+        elif(var_type_ == "bool"):
+            self.value=False
 
 code_variables = {}
 
@@ -49,8 +55,8 @@ def is_a_number(str):
         return False
 
 def sError(line,value,errorLine):
-    print("Syntax error (line {0}): unexpected '{1}'...{2}".format(line,value,errorLine))
-    #print("Syntax error (line {0}): unexpected '{1}'".format(line,value))
+    #print("Syntax error (line {0}): unexpected '{1}'...{2}".format(line,value,errorLine))
+    print("Syntax error (line {0}): unexpected '{1}'".format(line,value))
     sys.exit()
 
 def lineno():
@@ -83,7 +89,12 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
         #print("cState:"+cState)   
         
         if(token_code[cTokenIndex].token=="id_token"):                 
-            cState = "<id_token>"
+            cState = "<id_token>"        
+
+        if(nToken.token=="id_token"):
+            if(not(nToken.value in code_variables)):
+                print("Error (line {0}): variable '{1}' was not declared.".format(nToken.line,nToken.value))
+                sys.exit()  
         
         if(token_code[cTokenIndex].token=="literal_token"):                        
             cState = "<literal_token>"
@@ -106,7 +117,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
         if((cState=="(" and cDerivationName=="<while>" and token_code[cTokenIndex-1].value=="while")or (cState=="(" and cDerivationName=="<if>" and token_code[cTokenIndex-1].value=="if")):
             #print("tem while")
             cState = "<operation>"            
-            opString=""
+            opString=""            
             while(True):                
                 if(cTokenIndex<len(token_code)-1):
                     cToken = nToken
@@ -121,7 +132,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                             opString+="**"
                         elif(cToken.token == "id_token"):
                             if(cToken.value in code_variables):
-                                opString+='code_variables["'+cToken.value+'"] '
+                                opString+='code_variables["'+cToken.value+'"].value '
                             else:
                                 print("Error (line {0}): variable '{1}' was not declared.".format(cToken.line,cToken.value))
                                 sys.exit()
@@ -134,7 +145,9 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                 sys.exit()
             else:
                 try:
-                    eval("'"+opString+"'")              
+                    #print(opString)                    
+                    eval(opString)     
+                    #print(eval(opString))                                          
                 except:
                     print("Syntax error (line {0}): operation '{1}' is invalid. Check for parenthesis, variables, numbers and literals.".format(cToken.line,opString))    
                     sys.exit()
@@ -179,7 +192,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                     elif(gProbe==0):
                         pass #codigo terminou    
                 else:                                   
-                    sError(cToken.line,cToken.value)
+                    sError(cToken.line,cToken.value,lineno())
 
 
             ##ATRIBUICAO DE STRINGS  
@@ -331,7 +344,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                                 opString+="**"
                             elif(cToken.token == "id_token"):
                                 if(cToken.value in code_variables):
-                                    opString+='code_variables["'+cToken.value+'"] '
+                                    opString+='code_variables["'+cToken.value+'"].value '
                                 else:
                                     print("Error (line {0}): variable '{1}' was not declared.".format(cToken.line,cToken.value))
                                     sys.exit()
@@ -364,11 +377,13 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                                 sError(nToken.line,nToken.value,lineno())  
                             break
                         else:
-                            sError(cToken.line,cToken.value)
+                            sError(cToken.line,cToken.value,lineno())
                     else:
                         print("Syntax error: unexpected end of file after line {0}.".format(token_code[cTokenIndex].line))
                 try:
-                    eval("'"+opString+"'")       
+                    #print(opString)  
+                    eval(opString)                  
+                    #print(eval(opString))
                 except:
                     print("Syntax error (line {0}): operation '{1}' is invalid. Check for parenthesis, variables, numbers and literals.".format(cToken.line,opString))    
                     sys.exit()
@@ -439,7 +454,7 @@ def graphParse(token_code):
                 cState = "<id_token>"
             cTokenIndex+=1
             nToken=token_code[cTokenIndex+1]          
-            if(nToken.token=="dataType_token"):
+            if(nToken.token=="dataType_token" or nToken.token=="canvas_token"):                
                 cDataType = nToken.value                          
         else:                                                     
             if(cTokenIndex==-1):
@@ -454,10 +469,13 @@ def graphParse(token_code):
             print("Error: variable '{0}' in line {1} already declared previously (in line {2})".format(var_.name,var_.line,code_variables[var_.name].line))
             sys.exit()
         else:
-            code_variables[var_.name] = var_     
+            code_variables[var_.name] = var_   
+            
+
 
     
-        
+    for var in code_variables:
+        print("Nome: {0}. Tipo: {1}.".format(code_variables[var].name,code_variables[var].type))
 
     
     #code statements parser
@@ -479,10 +497,10 @@ def graphParse(token_code):
 
 
 
-for graph in derivations:
-     plt.figure(graph)
-     nx.draw(derivations[graph], with_labels=True,)
-plt.show()
+# for graph in derivations:
+#      plt.figure(graph)
+#      nx.draw(derivations[graph], with_labels=True,)
+# plt.show()
 
 
 
