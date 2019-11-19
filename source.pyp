@@ -9,111 +9,41 @@ canvas fundo;
 string nome;
 string a_;
 begin
+a=3;
+b=7;
+while (a<b){
+		
+		a = b+1;
+}
+
+
+a = 10+1;
+
+
+bc = 9^2+b;
 a=7+10;
 #a=; 
 a=10;
-bc = 9^2;
-
+c=9.3;
   for a from 0 to 10 step 1{
-   
-       for b from 0 to 10 step 1{
-   
+	
+       for a from 0 to 10 step 1 {
+	
+	
     a = 10;
-    nome = "oinii";
- 
-   
+	
+    a = "oinii";
+
   }
-    a = 10;
+
+    a = 10 ;
     nome = "oinii";
+
   
-      for b from 0 to 10 step 1{
-   
-    a = 10;
-    nome = "oinii";
- 
-   
-  }
-    bf = True;
-    nome = "oinii";
-    bf = True;
-    
-    fundo = square(X 1920 Y 1080 color "white")    ;
-    
-    bf = True;
-    nome = "oinii";
-    for b from 0 to 10 step 1{
-   
-    a = 10;
-    nome = "oinii";
- 
-   
-  }
-    
-  }
-
-  while(True and True){
-    while(True and True){
-    
-    nome = "oinii";
-    bf = True;
-    
-    fundo = square(X 1920 Y 1080 color "white")    ;
-    
-    bf = True;
-    nome = "oinii";
-    a = 10;
-
-  }
-    nome = "oinii";
-    bf = True;
-    while(True and True){
-    
-    nome = "oinii";
-    bf = True;
-    
-    fundo = square(X 1920 Y 1080 color "white")    ;
-    
-    bf = True;
-    nome = "oinii";
-    a = 10;
-
-  }
-    fundo = square(X 1920 Y 1080 color "white")    ;
-    
-    bf = True;
-    nome = "oinii";
-    a = 10;
-    while(True and True){
-    
-    nome = "oinii";
-    bf = True;
-    
-    fundo = square(X 1920 Y 1080 color "white")    ;
-    
-    bf = True;
-    nome = "oinii";
-    a = 10;
-
-  }
-
-  }
   
-  if(a<bc){
-    c=3.5;
-    
-        }
-
-if(bf<= bc)
-{
-  c = 32;
+  
+  }
+if(a<b){
+a=10;
 }
-
-if(a==bf){
-    c_82=4;
-}
-
-  #teste  comentarioªºç
-    fundo.draw( square(20,20,"black"));#svbweuyvfuªª
- fundo.export("teste de final","png");
- #comentario
- end
+end
