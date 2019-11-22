@@ -3,7 +3,7 @@
 import sys #biblioteca para usar comandos de sistema
 from Reserved.reserved import *
 import networkx as nx
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from parseBNF import listOfGraphs,listOfSketches
 import inspect
 
@@ -55,8 +55,8 @@ def is_a_number(str):
         return False
 
 def sError(line,value,errorLine):
-    print("Syntax error (line {0}): unexpected '{1}'...{2}".format(line,value,errorLine))
-    #print("Syntax error (line {0}): unexpected '{1}'".format(line,value))
+    #print("Syntax error (line {0}): unexpected '{1}'...{2}".format(line,value,errorLine))
+    print("Syntax error (line {0}): unexpected '{1}'".format(line,value))
     sys.exit()
 
 def lineno():
@@ -72,7 +72,9 @@ def isnt_Terminal(token_type):
 def asToken(str_):
     return "<"+str_+">"
 
-def checkEnd(token_code,cTokenIndex,gProbe):    
+    
+
+def check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName):    
     if(cTokenIndex==len(token_code)-1):        
         if(token_code[cTokenIndex].value=="end" and (token_code[cTokenIndex-1].value==";" or token_code[cTokenIndex-1].value=="}")):              
             if(gProbe>0):
@@ -85,7 +87,20 @@ def checkEnd(token_code,cTokenIndex,gProbe):
         else:
             print("Syntax error: unexpected end of file after line {0}.".format(token_code[cTokenIndex].line))
             sys.exit()
-            
+    elif(token_code[cTokenIndex].value=="break"):        
+        if(not(isLoop)):
+            sError(token_code[cTokenIndex].line,token_code[cTokenIndex].value,lineno()) 
+    elif(token_code[cTokenIndex].token=="id_token" and cDerivationName!="<base_code>"):                    
+        if(not(token_code[cTokenIndex].value in code_variables)):
+            print("Error (line {0}): variable '{1}' was not declared.".format(token_code[cTokenIndex].line,token_code[cTokenIndex].value))
+            sys.exit()  
+    elif(cDerivationName!="<if>" and cDerivationName!="<else>"):
+        #print("ok... checando proximos")
+        if(token_code[cTokenIndex].value=="else"):            
+            sError(token_code[cTokenIndex].line,token_code[cTokenIndex].value,lineno())
+            #a = raw_input("")
+    
+
 
 def is_Terminal(token_type):
     return not(isnt_Terminal(token_type))
@@ -94,7 +109,7 @@ for dataType in data_type_list:
     var_shortcut[dataType] = derivations['<variable_declaration>']
 var_shortcut["canvas"] = derivations['<variable_declaration>']
 
-def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
+def statementsGraphParser(token_code,cTokenIndex,cDerivationName,isLoop):
     global gProbe
     nToken = token_code[cTokenIndex+1]
     cState = token_code[cTokenIndex].value       
@@ -102,13 +117,13 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
     while(True):       
         #a = str(raw_input(""))        
         #print("cState:"+cState)                   
-        checkEnd(token_code,cTokenIndex,gProbe)        
+        check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)        
+        
         if(token_code[cTokenIndex].token=="id_token"):                
             cState = "<id_token>"        
         
 
-        if(nToken.token=="id_token"):
-            
+        if(nToken.token=="id_token"):            
             if(not(nToken.value in code_variables)):
                 print("Error (line {0}): variable '{1}' was not declared.".format(nToken.line,nToken.value))
                 sys.exit()  
@@ -119,7 +134,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
         if(token_code[cTokenIndex].token == "sketchType_token"):                        
             cState = "<sketchType_token>"
      
-        #print(cDerivationName)
+        #sError(nToken.line,nToken.value,lineno())vationName)
         if(cDerivationName=="<for>"):            
             if(nToken.token=="int" or nToken.token=="float"):
                 nToken.value = asToken(nToken.token)+cState
@@ -131,9 +146,9 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                 print("Error (line {0}): variable '{1}' was not declared.".format(token_code[cTokenIndex].line,token_code[cTokenIndex].value))
                 sys.exit()   
 
-        print(cDerivationName)     
+        #print(cDerivationName)     
         
-        if((cState=="(" and cDerivationName=="<while>" and token_code[cTokenIndex-1].value=="while")or (cState=="(" and cDerivationName=="<if>" and token_code[cTokenIndex-1].value=="if") or (cState=="(" and cDerivationName=="<else>" and token_code[cTokenIndex-1].value=="if")):
+        if((cState=="(" and cDerivationName=="<while>" and token_code[cTokenIndex-1].value=="while")or (cState=="(" and cDerivationName=="<if>" and token_code[cTokenIndex-1].value=="if") or (cState=="(" and cDerivationName=="<else>" and token_code[cTokenIndex-1].value=="if")):            
             #print("tem while")
             cState = "<operation>"            
             opString=""
@@ -142,7 +157,8 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                 if(cTokenIndex<len(token_code)-1):
                     cToken = nToken
                     cTokenIndex+=1
-                    checkEnd(token_code,cTokenIndex,gProbe)
+                    check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+                    
                     nToken = token_code[cTokenIndex+1]
                     if(cToken.value==")" and nToken.value=="{"):
                         cState = ")"
@@ -177,27 +193,36 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                     sys.exit()
             
 
-        if(nToken.value in derivations[cDerivationName][cState] or "<"+nToken.token+">" in derivations[cDerivationName][cState]):#walk  
-
-            #  
+        if(nToken.value in derivations[cDerivationName][cState] or "<"+nToken.token+">" in derivations[cDerivationName][cState]):#walk             
+            if(cState=="else"):#MAGIC...
+                sError(token_code[cTokenIndex].line,token_code[cTokenIndex].value,lineno())                
             
 
             if(nToken.value == "{"):                        
                 gProbe+=1
                 cTokenIndex+=1
-                checkEnd(token_code,cTokenIndex,gProbe)
+                check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+                
                 cState = nToken.value
                 nToken = token_code[cTokenIndex+1]                
-                if(nToken.value in code_shortcuts):                    
-                    cTokenIndex = statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts[nToken.value]) 
+                if(nToken.value in code_shortcuts):    
+                    if(cDerivationName=="<for>" or cDerivationName=="<while>"):                
+                        cTokenIndex = statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts[nToken.value],True) 
+                    else:
+                        cTokenIndex = statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts[nToken.value],False) 
                 elif("<"+nToken.token+">" in code_shortcuts):                                        
-                    cTokenIndex = statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts["<"+nToken.token+">"]) 
+                    if(cDerivationName=="<for>" or cDerivationName=="<while>"):
+                        cTokenIndex = statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts["<"+nToken.token+">"],True) 
+                    else:
+                        cTokenIndex = statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts["<"+nToken.token+">"],False) 
                 else:
                     sError(nToken.line,nToken.value,lineno())
                 
-                print(cDerivationName)
                 
-                cToken = token_code[cTokenIndex]                                
+                check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+                
+                cToken = token_code[cTokenIndex]                         
+                                       
                 if(cToken.value in code_shortcuts):
                     cDerivationName = code_shortcuts[cToken.value]
                     cState = cToken.value
@@ -216,6 +241,8 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                     if(gProbe>0):
                         sError(nToken.line,nToken.value,lineno())
                     elif(gProbe==0):
+                        print("Compilation finished")
+                        sys.exit()
                         pass #codigo terminou    
                 else:                                   
                     sError(cToken.line,cToken.value,lineno())
@@ -234,7 +261,8 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                     sketchDerivation = sketch_shortcuts[nToken.value]
                     cState = nToken.value
                     cTokenIndex+=1
-                    checkEnd(token_code,cTokenIndex,gProbe)
+                    check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+                    
                     nToken = token_code[cTokenIndex+1]  
                     while(True):                        
                         if(token_code[cTokenIndex].token == "int"):
@@ -257,18 +285,21 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                         if(nToken.value in derivations[sketchDerivation][cState] or "<"+nToken.token+">" in derivations[sketchDerivation][cState] or "<"+nToken.token+">"+cState in derivations[sketchDerivation][cState]):        
                             cState = nToken.value
                             cTokenIndex+=1
-                            checkEnd(token_code,cTokenIndex,gProbe)
+                            check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+                            
                             nToken = token_code[cTokenIndex+1]  
                         elif(nToken.value==";"):                            
                             #atribution (later)                                   
                             cState = nToken.value
                             cTokenIndex+=1
-                            checkEnd(token_code,cTokenIndex,gProbe)
+                            check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+                            
                             nToken = token_code[cTokenIndex+1]                              
                             if(nToken.value in code_shortcuts):
                                 cDerivationName = code_shortcuts[nToken.value]
                                 cTokenIndex+=1
-                                checkEnd(token_code,cTokenIndex,gProbe)
+                                check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+                                
                                 cState = nToken.value
                                 nToken = token_code[cTokenIndex+1]  
                                 break;
@@ -276,7 +307,8 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                                 cDerivationName = code_shortcuts["<"+nToken.token+">"]
                                 cState = "<"+nToken.token+">"
                                 cTokenIndex+=1
-                                checkEnd(token_code,cTokenIndex,gProbe)
+                                check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+                                
                                 cState = nToken.value
                                 nToken = token_code[cTokenIndex+1]  
                                 break;
@@ -290,6 +322,8 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                                 if(gProbe>0):
                                     sError(nToken.line,nToken.value,lineno())
                                 elif(gProbe==0):
+                                    print("Compilation finished")
+                                    sys.exit()
                                     pass #codigo terminou 
                             else:                                
                                 sError(nToken.line,nToken.value,lineno()) 
@@ -303,6 +337,8 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                             if(gProbe>0):
                                 sError(nToken.line,nToken.value,lineno())
                             elif(gProbe==0):
+                                print("Compilation finished")
+                                sys.exit()
                                 pass #codigo terminou 
                         else:
                             sError(nToken.line,nToken.value,lineno())  
@@ -323,7 +359,8 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                     return
                     pass #codigo terminou
             cTokenIndex+=1
-            checkEnd(token_code,cTokenIndex,gProbe)
+            check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+            
             cState=nToken.value
             nToken = token_code[cTokenIndex+1]                
         #elif("<"+nToken.token+">" in derivations[cDerivationName][cState] and nToken.token=="id_token"):
@@ -339,19 +376,23 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
             if(gProbe>0):
                 sError(nToken.line,nToken.value,lineno())
             elif(gProbe==0):
+                print("Compilation finished")
+                sys.exit()
                 pass #codigo terminou
         elif(cState == ";"):#end of statement                  
             if(nToken.value in code_shortcuts):
                 cDerivationName = code_shortcuts[nToken.value]
                 cTokenIndex+=1
-                checkEnd(token_code,cTokenIndex,gProbe)
+                check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+                
                 cState = nToken.value
                 nToken = token_code[cTokenIndex+1]  
             elif("<"+nToken.token+">" in code_shortcuts):
                 cDerivationName = code_shortcuts["<"+nToken.token+">"]
                 cState = "<"+nToken.token+">"
                 cTokenIndex+=1
-                checkEnd(token_code,cTokenIndex,gProbe)
+                check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+                
                 cState = nToken.value
                 nToken = token_code[cTokenIndex+1]  
             
@@ -372,7 +413,8 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                     if(cTokenIndex<len(token_code)-1):
                         cToken = nToken
                         cTokenIndex+=1
-                        checkEnd(token_code,cTokenIndex,gProbe)
+                        check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+                        
                         nToken = token_code[cTokenIndex+1]
                         if(cToken.token == "math_operator" or cToken.value == "(" or cToken.value == ")" or cToken.token == "id_token" or cToken.token == "boolean_token" or cToken.token=="logic_token" or is_a_number(cToken.value) or cToken.token=="logic_operator"):
 
@@ -393,14 +435,16 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                             if(nToken.value in code_shortcuts):
                                 cDerivationName = code_shortcuts[nToken.value]
                                 cTokenIndex+=1
-                                checkEnd(token_code,cTokenIndex,gProbe)
+                                check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+                                
                                 cState = nToken.value
                                 nToken = token_code[cTokenIndex+1]  
                             elif("<"+nToken.token+">" in code_shortcuts):
                                 cDerivationName = code_shortcuts["<"+nToken.token+">"]
                                 cState = "<"+nToken.token+">"
                                 cTokenIndex+=1
-                                checkEnd(token_code,cTokenIndex,gProbe)
+                                check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+                                
                                 cState = nToken.value
                                 nToken = token_code[cTokenIndex+1]  
                             elif(nToken.value == "}"):                                
@@ -413,6 +457,8 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                                 if(gProbe>0):
                                     sError(nToken.line,nToken.value,lineno())
                                 elif(gProbe==0):
+                                    print("Compilation finished")
+                                    sys.exit()
                                     pass #codigo terminou
                             else:                                                        
                                 sError(nToken.line,nToken.value,lineno())  
@@ -433,13 +479,20 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
             if(cState == "{"):                        
                 gProbe+=1
                 cTokenIndex+=1
-                checkEnd(token_code,cTokenIndex,gProbe)
+                check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+                
                 cState = nToken.value
                 nToken = token_code[cTokenIndex+1]                    
                 if(token_code[cTokenIndex].value in code_shortcuts):                    
-                    cTokenIndex = statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts[token_code[cTokenIndex].value]) 
+                    if(cDerivationName=="<for>" or cDerivationName=="<while>"):
+                        cTokenIndex = statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts[token_code[cTokenIndex].value],True) 
+                    else:
+                        cTokenIndex = statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts[token_code[cTokenIndex].value],False) 
                 elif("<"+token_code[cTokenIndex].token+">" in code_shortcuts):                                        
-                    cTokenIndex = statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts["<"+token_code[cTokenIndex].token+">"]) 
+                    if(cDerivationName=="<for>" or cDerivationName=="<while>"):
+                        cTokenIndex = statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts["<"+token_code[cTokenIndex].token+">"],True) 
+                    else:
+                        cTokenIndex = statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts["<"+token_code[cTokenIndex].token+">"],False) 
                 else:
                     sError(token_code[cTokenIndex].line,token_code[cTokenIndex].value,lineno())
                 
@@ -466,6 +519,8 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
                     if(gProbe>0):
                         sError(nToken.line,nToken.value,lineno())
                     elif(gProbe==0):
+                        print("Compilation finished")
+                        sys.exit()
                         pass #codigo terminou    
                 else:                                   
                     sError(cToken.line,cToken.value,lineno())
@@ -473,7 +528,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
             # if(nToken.value in code_shortcuts):
             #     cDerivationName = code_shortcuts[nToken.value]
             #     cTokenIndex+=1
-            #     checkEnd(token_code,cTokenIndex,gProbe)
+            #     check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
             #     cState = nToken.value
             #     nToken = token_code[cTokenIndex+1]  
             #     print(cState)
@@ -483,7 +538,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName):
             #     cDerivationName = code_shortcuts["<"+nToken.token+">"]
             #     cState = "<"+nToken.token+">"
             #     cTokenIndex+=1
-            #     checkEnd(token_code,cTokenIndex,gProbe)
+            #     check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
             #     cState = nToken.value
             #     nToken = token_code[cTokenIndex+1]  
             #     print(cState)
@@ -535,7 +590,7 @@ def graphParse(token_code):
                 declareList.append(Variable(cDataType,nToken))     
                 cState = "<id_token>"
             cTokenIndex+=1
-            checkEnd(token_code,cTokenIndex,gProbe)
+            check(token_code,cTokenIndex,gProbe,False,cDerivationName)            
             nToken=token_code[cTokenIndex+1]          
             if(nToken.token=="dataType_token" or nToken.token=="canvas_token"):                
                 cDataType = nToken.value                          
@@ -579,9 +634,9 @@ def graphParse(token_code):
             print("There are no instructions to be executed. =P")
             sys.exit()
         if(nToken.value in code_shortcuts):                        
-            statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts[nToken.value])
+            statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts[nToken.value],False)
         elif("<"+nToken.token+">" in code_shortcuts):            
-            statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts["<"+nToken.token+">"])
+            statementsGraphParser(token_code,cTokenIndex+1,code_shortcuts["<"+nToken.token+">"],False)
         else:        
             sError(nToken.line,nToken.value,lineno())
 
