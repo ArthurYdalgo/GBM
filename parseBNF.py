@@ -72,10 +72,8 @@ def generateParseGraph():
     name = "<attribution>"
     graphs[name] = nx.DiGraph()
     
-    connectTokenToTokens(name,name,"<id_token>")    
-    connectTokenToTokens(name,"<id_token>",",")    
-    connectTokenToTokens(name,"<id_token>","=")
-    connectTokenToTokens(name,",","<id_token>")        
+    connectTokenToTokens(name,name,"<id_token>")        
+    connectTokenToTokens(name,"<id_token>","=")       
     connectTokenToTokens(name,"=","<operation>")   
     connectTokenToTokens(name,"<operation>",";")    
     connectTokenToTokens(name,"=","<literal_token>")
@@ -105,7 +103,7 @@ def generateParseGraph():
     connectTokenToTokens(name,"Y","<int>Y")
     connectTokenToTokens(name,"<int>Y","color")
     connectTokenToTokens(name,"color","<literal_token>")
-    connectTokenToTokens(name,"<literal_token>",")")    
+    connectTokenToTokens(name,"<literal_token>",")")
 
     #sketchType Web
     name = "<web>"
