@@ -18,6 +18,8 @@ class Variable():
             self.value=""
         elif(var_type_ == "bool"):
             self.value=False
+        else:
+            self.value = None
 
 code_variables = {}
 
@@ -80,8 +82,7 @@ def check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName):
             if(gProbe>0):
                 sError(nToken.line,nToken.value,lineno())
             elif(gProbe==0):
-                print("Compilation finished")
-                sys.exit()
+                return
         elif(token_code[cTokenIndex].value=="end"):
             sError(token_code[cTokenIndex].line,token_code[cTokenIndex].value,lineno())
         else:
@@ -110,6 +111,8 @@ for dataType in data_type_list:
 var_shortcut["canvas"] = derivations['<variable_declaration>']
 
 def statementsGraphParser(token_code,cTokenIndex,cDerivationName,isLoop):
+    global code_variables
+    
     global gProbe
     nToken = token_code[cTokenIndex+1]
     cState = token_code[cTokenIndex].value       
@@ -192,7 +195,10 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName,isLoop):
                     print("Syntax error (line {0}): operation '{1}' is invalid. Check for parenthesis, variables, numbers and literals.".format(cToken.line,sString))    
                     sys.exit()
             
-
+        if(not(cState in derivations[cDerivationName])):
+            sError(token_code[cTokenIndex].line,token_code[cTokenIndex].value,lineno())
+        
+            
         if(nToken.value in derivations[cDerivationName][cState] or "<"+nToken.token+">" in derivations[cDerivationName][cState]):#walk             
             if(cState=="else"):#MAGIC...
                 sError(token_code[cTokenIndex].line,token_code[cTokenIndex].value,lineno())                
@@ -241,19 +247,19 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName,isLoop):
                     if(gProbe>0):
                         sError(nToken.line,nToken.value,lineno())
                     elif(gProbe==0):
-                        print("Compilation finished")
-                        sys.exit()
-                        pass #codigo terminou    
+                        return  
                 else:                                   
                     sError(cToken.line,cToken.value,lineno())
 
 
             ##ATRIBUICAO DE STRINGS  
-            elif(nToken.token == "literal_token" and cDerivationName == "<attribution>"):                
-                pass
-                
-                
-                #atribution (later)  
+            elif(nToken.token == "literal_token" and cDerivationName == "<attribution>"):   
+                varName = token_code[cTokenIndex-1].value           
+                code_variables[varName].value = nToken.value;
+                cTokenIndex+=1
+                check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+                cState = token_code[cTokenIndex]
+                nToken = token_code[cTokenIndex+1]                                
 
             ##ATRIBUICAO DE SKETCH
             elif(nToken.token == "sketchType_token" and cDerivationName == "<attribution>"):                
@@ -322,9 +328,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName,isLoop):
                                 if(gProbe>0):
                                     sError(nToken.line,nToken.value,lineno())
                                 elif(gProbe==0):
-                                    print("Compilation finished")
-                                    sys.exit()
-                                    pass #codigo terminou 
+                                    return
                             else:                                
                                 sError(nToken.line,nToken.value,lineno()) 
                         elif(nToken.value == "}"):                                
@@ -337,9 +341,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName,isLoop):
                             if(gProbe>0):
                                 sError(nToken.line,nToken.value,lineno())
                             elif(gProbe==0):
-                                print("Compilation finished")
-                                sys.exit()
-                                pass #codigo terminou 
+                                return
                         else:
                             sError(nToken.line,nToken.value,lineno())  
 
@@ -376,9 +378,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName,isLoop):
             if(gProbe>0):
                 sError(nToken.line,nToken.value,lineno())
             elif(gProbe==0):
-                print("Compilation finished")
-                sys.exit()
-                pass #codigo terminou
+                return
         elif(cState == ";"):#end of statement                  
             if(nToken.value in code_shortcuts):
                 cDerivationName = code_shortcuts[nToken.value]
@@ -401,12 +401,13 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName,isLoop):
         
         ##ATRIBUICAO DE OPERAÇOES
         elif(cDerivationName == "<attribution>"):  
-                             
+            
             #atribuicao de operaçoes                            
             if(nToken.value == ";"):
-                sError(nToken.line,";")
-            if(nToken.token == "id_token" or nToken.token=="boolean_token" or is_a_number(nToken.value) or nToken.value == "("): 
+                sError(nToken.line,";",lineno())
+            if((nToken.token == "id_token" or nToken.token=="boolean_token" or is_a_number(nToken.value) or nToken.value == "(")and token_code[cTokenIndex-1].token=="id_token"): 
                 cState = "<operation>"
+                varName = token_code[cTokenIndex-1].value                
                 opString = ""
                 sString=""
                 while(True):                        
@@ -431,7 +432,15 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName,isLoop):
                             else:
                                 opString+=cToken.value+" "
                                 sString+=cToken.value+" "
-                        elif(cToken.value==";"):                                                                               
+                        elif(cToken.value==";"):     
+                            try:
+                                #print(opString)  
+                                eval(opString)                  
+                                print(eval(opString))                                
+                                code_variables[varName].value = eval(opString)
+                            except:
+                                print("Syntax error (line {0}): operation '{1}' is invalid. Check for parenthesis, variables, numbers and literals.".format(cToken.line,sString))    
+                                sys.exit()                                                                          
                             if(nToken.value in code_shortcuts):
                                 cDerivationName = code_shortcuts[nToken.value]
                                 cTokenIndex+=1
@@ -457,9 +466,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName,isLoop):
                                 if(gProbe>0):
                                     sError(nToken.line,nToken.value,lineno())
                                 elif(gProbe==0):
-                                    print("Compilation finished")
-                                    sys.exit()
-                                    pass #codigo terminou
+                                    return
                             else:                                                        
                                 sError(nToken.line,nToken.value,lineno())  
                             break
@@ -467,13 +474,9 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName,isLoop):
                             sError(cToken.line,cToken.value,lineno())
                     else:
                         print("Syntax error: unexpected end of file after line {0}.".format(token_code[cTokenIndex].line))
-                try:
-                    #print(opString)  
-                    eval(opString)                  
-                    #print(eval(opString))
-                except:
-                    print("Syntax error (line {0}): operation '{1}' is invalid. Check for parenthesis, variables, numbers and literals.".format(cToken.line,sString))    
-                    sys.exit()
+            else:
+                sError(token_code[cTokenIndex+1].line,token_code[cTokenIndex+1].value,lineno())
+                
         elif("<code_instructions>" in derivations[cDerivationName][cState]):                                   
             
             if(cState == "{"):                        
@@ -519,9 +522,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName,isLoop):
                     if(gProbe>0):
                         sError(nToken.line,nToken.value,lineno())
                     elif(gProbe==0):
-                        print("Compilation finished")
-                        sys.exit()
-                        pass #codigo terminou    
+                        return  
                 else:                                   
                     sError(cToken.line,cToken.value,lineno())
 
@@ -613,7 +614,7 @@ def graphParse(token_code):
 
     
     for var in code_variables:
-        #print("Nome: {0}. Tipo: {1}.".format(code_variables[var].name,code_variables[var].type))
+        print("Nome: {0}. Tipo: {1}, valor: {2}.".format(code_variables[var].name,code_variables[var].type,code_variables[var].value))
         pass
 
     
@@ -644,6 +645,12 @@ def graphParse(token_code):
         print("Syntax error: unexpected end of file after line {0}. 'begin' was expected.".format(nToken.line))
     else:
         print("Syntax error (line {0}): unexpected '{1}'. 'begin' was expected.".format(nToken.line,nToken.value))
+
+    print("Compilation Finished...")
+    for var in code_variables:
+        print("Nome: {0}. Tipo: {1}, valor: {2}.".format(code_variables[var].name,code_variables[var].type,code_variables[var].value))
+        pass
+
     return
 
 
