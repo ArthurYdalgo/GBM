@@ -6,6 +6,8 @@ import networkx as nx
 #import matplotlib.pyplot as plt
 from parseBNF import listOfGraphs,listOfSketches
 import inspect
+from PIL import Image, ImageFont, ImageDraw, ImageEnhance
+import numpy as np
 
 class Variable():
     def __init__(self,var_type_,token):
@@ -19,7 +21,7 @@ class Variable():
         elif(var_type_ == "bool"):
             self.value=False
         else:
-            self.value = None
+            self.value = []
 
 code_variables = {}
 
@@ -65,6 +67,12 @@ def lineno():
     """Returns the current line number in our program."""
     return inspect.currentframe().f_back.f_lineno
 
+def hex_to_rgb(value):        
+    value = value[1:]    
+    lv = len(value)
+    tupla = tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
+    return tupla
+
 def isnt_Terminal(token_type):
     if(token_type[0]=="<" and token_type[len(token_type)-1]==">"):
         return True
@@ -101,6 +109,26 @@ def check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName):
             sError(token_code[cTokenIndex].line,token_code[cTokenIndex].value,lineno())
             #a = raw_input("")
     
+def list_to_sketch(sketch_properties_list):
+    image = Image.new('RGBA',(int(sketch_properties_list[1]),int(sketch_properties_list[2])))
+    draw = ImageDraw.Draw(image)
+    if(sketch_properties_list[0]=="circle"):
+        if(sketch_properties_list[3][0]=="%"):            
+            hex_color = sketch_properties_list[3][1:]
+            print(hex_to_rgb(hex_color))
+            draw.ellipse((0, 0, int(sketch_properties_list[1]), int(sketch_properties_list[2])), fill = hex_to_rgb(hex_color))
+        else:
+            draw.ellipse((0, 0, int(sketch_properties_list[1]), int(sketch_properties_list[2])), fill = sketch_properties_list[3])
+    elif(sketch_properties_list[0]=="square"):
+        if(sketch_properties_list[3][0]=="%"):
+            hex_color = sketch_properties_list[3][1:]
+            print(hex_to_rgb(hex_color))
+            draw.rectangle((0, 0, int(sketch_properties_list[1]), int(sketch_properties_list[2])), fill = hex_to_rgb(hex_color))
+        else:
+            draw.rectangle((0, 0, int(sketch_properties_list[1]), int(sketch_properties_list[2])), fill = sketch_properties_list[3])        
+    #elif(sketch_properties_list[0]=="circle"):
+    image.show()
+    return np.array(image)
 
 
 def is_Terminal(token_type):
@@ -140,8 +168,9 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName,isLoop):
         #sError(nToken.line,nToken.value,lineno())vationName)
         if(cDerivationName=="<for>"):            
             if(nToken.token=="int" or nToken.token=="float"):
-                nToken.value = asToken(nToken.token)+cState
-        
+                nToken.value = asToken(nToken.token)+cState                
+            
+
         
         #if(cDerivationName == "<attribution>" and token_code[cTokenIndex].token == "id_token"): #nao sei se vou precisar de novo
         if(token_code[cTokenIndex].token == "id_token"):            
@@ -200,7 +229,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName,isLoop):
         
             
         if(nToken.value in derivations[cDerivationName][cState] or "<"+nToken.token+">" in derivations[cDerivationName][cState]):#walk             
-            if(cState=="else"):#MAGIC...
+            if(cState=="else"):#MAGIC... DON'T KNOW HOW OR WHY, BUT IT WORKS...
                 sError(token_code[cTokenIndex].line,token_code[cTokenIndex].value,lineno())                
             
 
@@ -263,39 +292,50 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName,isLoop):
 
             ##ATRIBUICAO DE SKETCH
             elif(nToken.token == "sketchType_token" and cDerivationName == "<attribution>"):                
-                if(nToken.value in sketch_shortcuts):
+                if(nToken.value in sketch_shortcuts):                    
                     sketchDerivation = sketch_shortcuts[nToken.value]
+                    varName = token_code[cTokenIndex-1].value                     
                     cState = nToken.value
                     cTokenIndex+=1
                     check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
+                    #print(token_code[cTokenIndex].value)
                     
                     nToken = token_code[cTokenIndex+1]  
+                    sketch_properties_list=[]                
+                    sketch_properties_list.append(cState)    
                     while(True):                        
                         if(token_code[cTokenIndex].token == "int"):
                             if(asToken("int") in derivations[sketchDerivation]):
                                 cState = asToken("int")
+                                sketch_properties_list.append(token_code[cTokenIndex].value)
                             elif(asToken("int")+token_code[cTokenIndex-1].value in derivations[sketchDerivation]):
                                 cState = asToken("int")+token_code[cTokenIndex-1].value
+                                sketch_properties_list.append(token_code[cTokenIndex].value)
                         elif(token_code[cTokenIndex].token == "float"):
                             if(asToken("float") in derivations[sketchDerivation]):
                                 cState = asToken("float")
+                                sketch_properties_list.append(token_code[cTokenIndex].value)
                             elif(asToken("float")+token_code[cTokenIndex-1].value in derivations[sketchDerivation]):
                                 cState = asToken("float")+token_code[cTokenIndex-1].value
+                                sketch_properties_list.append(token_code[cTokenIndex].value)
                         elif(token_code[cTokenIndex].token == "literal_token"):
                             if(asToken("literal_token") in derivations[sketchDerivation]):
                                 cState = asToken("literal_token")
+                                sketch_properties_list.append(token_code[cTokenIndex].value)
                             elif(asToken("literal_token")+token_code[cTokenIndex-1].value in derivations[sketchDerivation]):
                                 cState = asToken("literal_token")+token_code[cTokenIndex-1].value
+                                sketch_properties_list.append(token_code[cTokenIndex].value)
                         
 
-                        if(nToken.value in derivations[sketchDerivation][cState] or "<"+nToken.token+">" in derivations[sketchDerivation][cState] or "<"+nToken.token+">"+cState in derivations[sketchDerivation][cState]):        
+                        if(nToken.value in derivations[sketchDerivation][cState] or "<"+nToken.token+">" in derivations[sketchDerivation][cState] or "<"+nToken.token+">"+cState in derivations[sketchDerivation][cState]):                                  
                             cState = nToken.value
                             cTokenIndex+=1
                             check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
                             
                             nToken = token_code[cTokenIndex+1]  
-                        elif(nToken.value==";"):                            
-                            #atribution (later)                                   
+                        elif(nToken.value==";"):      
+                            #attribution
+                            code_variables[varName].value = list_to_sketch(sketch_properties_list)    
                             cState = nToken.value
                             cTokenIndex+=1
                             check(token_code,cTokenIndex,gProbe,isLoop,cDerivationName)
@@ -436,7 +476,7 @@ def statementsGraphParser(token_code,cTokenIndex,cDerivationName,isLoop):
                             try:
                                 #print(opString)  
                                 eval(opString)                  
-                                print(eval(opString))                                
+                                #print(eval(opString))                                
                                 code_variables[varName].value = eval(opString)
                             except:
                                 print("Syntax error (line {0}): operation '{1}' is invalid. Check for parenthesis, variables, numbers and literals.".format(cToken.line,sString))    
@@ -614,7 +654,10 @@ def graphParse(token_code):
 
     
     for var in code_variables:
-        print("Nome: {0}. Tipo: {1}, valor: {2}.".format(code_variables[var].name,code_variables[var].type,code_variables[var].value))
+        if(code_variables[var].type=="canvas"):
+            print("Nome: {0}. Tipo: {1}, valor: {2}.".format(code_variables[var].name,type(code_variables[var].type),code_variables[var].value))
+        else:
+            print("Nome: {0}. Tipo: {1}, valor: {2}.".format(code_variables[var].name,code_variables[var].type,code_variables[var].value))
         pass
 
     
@@ -626,8 +669,7 @@ def graphParse(token_code):
             if(token_code[cTokenIndex].value == "end"):
                 print("There are no instructions to be executed. =P")
                 sys.exit()
-            else:
-                print("aqui")
+            else:                
                 print("Syntax error: unexpected end of file after line {0}. 'end' was expected.".format(token_code[cTokenIndex].line))
                 sys.exit()
         nToken = token_code[cTokenIndex+1]   
@@ -648,7 +690,10 @@ def graphParse(token_code):
 
     print("Compilation Finished...")
     for var in code_variables:
-        print("Nome: {0}. Tipo: {1}, valor: {2}.".format(code_variables[var].name,code_variables[var].type,code_variables[var].value))
+        if(code_variables[var].type=="canvas"):
+            print("Nome: {0}. Tipo: {1}, valor: {2}.".format(code_variables[var].name,code_variables[var].type,type(code_variables[var].value)))
+        else:
+            print("Nome: {0}. Tipo: {1}, valor: {2}.".format(code_variables[var].name,code_variables[var].type,code_variables[var].value))
         pass
 
     return
